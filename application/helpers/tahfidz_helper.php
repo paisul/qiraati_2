@@ -144,9 +144,16 @@ function pastikan_menu_booking_maulid($db)
       'Url' => 'maulid', 'Icon' => 'fas fa-fw fa-calendar-check',
       'Urutan' => (int) ($maks['Urutan'] ?? 0) + 1, 'Aktif' => 1,
       'HanyaAdmin' => $hanya_admin, 'Grup' => $grup,
-      'TampilDashboard' => 1, 'TampilMenuBawah' => 0,
+      'TampilDashboard' => 1, 'TampilMenuBawah' => $grup === 'wali' ? 1 : 0,
     ]);
   }
+
+  // Instalasi yang sudah sempat menjalankan seed versi awal memiliki baris Wali dengan
+  // TampilMenuBawah=0. Pastikan baris lama ikut diperbaiki, bukan hanya instalasi baru.
+  $db->where('KunciMenu', 'maulid_wali')->update('menu_sidebar', [
+    'TampilDashboard' => 1,
+    'TampilMenuBawah' => 1,
+  ]);
 }
 
 // Sama seperti pastikan_menu_dana_submenu() tapi untuk grup 'musyrif' (dipakai Musyrif & Guru) -

@@ -15,6 +15,7 @@ $menu = [
   ['kelas', 'fa-school', 'Kelas', 'kelas', '', 'kelas'],
   ['Wali/Raport', 'fa-file-archive', 'Rapor', 'wali', 'raport', 'Wali/Raport'],
   ['dana', 'fa-wallet', 'Dana', 'dana', '', 'dana'],
+  ['maulid', 'fa-calendar-check', 'Maulid', 'maulid', '', 'maulid'],
   ['Wali/profil', 'fa-user-circle', 'Profil', 'wali', 'profil', 'Wali/profil'],
 ];
 ?>
