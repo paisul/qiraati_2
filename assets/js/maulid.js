@@ -1,5 +1,13 @@
 (function () {
   document.addEventListener('click', function (event) {
+    var calendarButton = event.target.closest('.maulid-day-book[data-toggle-target]');
+    if (calendarButton) {
+      var target = document.querySelector(calendarButton.getAttribute('data-toggle-target'));
+      window.setTimeout(function () {
+        if (target && !target.hidden) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }, 80);
+    }
+
     var button = event.target.closest('.js-use-location');
     if (!button) return;
     var form = button.closest('form');
