@@ -46,6 +46,8 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 # Database dumps and deployment archives
 *.sql
 *.sql.gz
+!database/
+!database/maulid_bookings.sql
 *.zip
 *.tar
 *.tar.gz

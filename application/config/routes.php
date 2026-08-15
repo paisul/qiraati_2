@@ -66,6 +66,8 @@ $route['dana-lain/(.+)'] = 'Dana_lain/$1';
 $route['laporan'] = 'laporan';
 $route['laporan/(:any)'] = 'laporan/index/$1';
 $route['statistik'] = 'statistik';
+$route['maulid'] = 'Maulid';
+$route['maulid/(.+)'] = 'Maulid/$1';
 $route['public/statistik'] = 'statistik';
 // Catatan penting soal (:any): CodeIgniter menerjemahkan (:any) jadi regex [^/]+ - HANYA cocok
 // SATU segmen URI (tidak boleh ada '/'). Aksi seperti "delete/5" atau "toggle_aktif/5" adalah DUA

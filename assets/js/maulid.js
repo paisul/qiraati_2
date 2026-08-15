@@ -1,0 +1,20 @@
+(function () {
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('.js-use-location');
+    if (!button) return;
+    var form = button.closest('form');
+    var status = form.querySelector('.js-location-status');
+    if (!navigator.geolocation) { status.textContent = 'Browser ini tidak mendukung pengambilan lokasi.'; return; }
+    button.disabled = true;
+    status.textContent = 'Mengambil lokasi…';
+    navigator.geolocation.getCurrentPosition(function (position) {
+      form.querySelector('.js-latitude').value = position.coords.latitude.toFixed(8);
+      form.querySelector('.js-longitude').value = position.coords.longitude.toFixed(8);
+      status.textContent = 'Lokasi berhasil diambil (akurasi ±' + Math.round(position.coords.accuracy) + ' meter).';
+      button.disabled = false;
+    }, function () {
+      status.textContent = 'Lokasi gagal diambil. Aktifkan GPS/izin lokasi, atau tempel link Google Maps.';
+      button.disabled = false;
+    }, {enableHighAccuracy: true, timeout: 15000, maximumAge: 60000});
+  });
+})();

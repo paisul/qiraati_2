@@ -1,0 +1,7 @@
+<input type="hidden" name="hijri_year" value="<?= (int)$year; ?>"><input type="hidden" name="rabiul_awal_day" value="<?= (int)$form_day; ?>">
+<div class="form-group"><label>Nama Ibu/Bapak</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
+<div class="form-group"><label>Nama/Lokasi Acara *</label><input class="form-control" name="location_name" maxlength="255" placeholder="Rumah Bapak Ahmad, Kampung Bukit" required></div>
+<div class="form-group"><button type="button" class="btn btn-outline-primary js-use-location"><i class="fas fa-crosshairs"></i> Gunakan Lokasi Saya</button><small class="form-text text-muted js-location-status">Izinkan akses lokasi saat diminta browser.</small></div>
+<div class="form-row"><div class="form-group col"><label>Latitude</label><input class="form-control js-latitude" name="latitude" inputmode="decimal" readonly></div><div class="form-group col"><label>Longitude</label><input class="form-control js-longitude" name="longitude" inputmode="decimal" readonly></div></div>
+<div class="form-group"><label>Link Google Maps (alternatif)</label><input type="url" class="form-control" name="maps_url" placeholder="https://maps.google.com/..."><small class="form-text text-muted">Wajib jika titik GPS tidak digunakan.</small></div>
+<div class="form-group"><label>Catatan (opsional)</label><textarea class="form-control" name="notes" rows="3"></textarea></div>
