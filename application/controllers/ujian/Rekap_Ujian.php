@@ -1,0 +1,193 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Rekap_Ujian extends CI_Controller
+{
+
+  public function __construct()
+  {
+    parent::__construct();
+    //Load Dependencies
+    cek_login();
+    // $this->load->model('Jenis_ujian_M');
+    $this->load->model('Target_ujian_M');
+    $this->load->model('Target_ujian_kelas_M');
+    $this->load->model('Santri_M');
+    $this->load->model('Kelas_M');
+    $this->load->model('Periode_ujian_M');
+    $this->load->model('Rekap_ujian_M');
+  }
+
+  // List all your items
+  public function index($offset = 0)
+  {
+    $pesan = $this->input->get('pesan') ?: $this->session->flashdata('pesan');
+
+    $data = [
+      'title' => 'Rekap Ujian',
+      'user' => $this->db->get_where('login', ['username' => $this->session->userdata('username')])->row_array(),
+      'target_ujian' => $this->Target_ujian_M->getAllTargetUjian(),
+      'santri' => $this->Santri_M->getAllSantri(),
+      'periode_ujian' => $this->Periode_ujian_M->getAllPeriodeUjian(),
+      'rekap_ujian' => $this->Rekap_ujian_M->getAllRekapUjian(),
+      'pesan' => $pesan,
+      'isi' => tampilan_mobile() ? 'ujian/mobile-rekap_ujian' : 'ujian/v-rekap_ujian',
+    ];
+
+    $this->load->view(tampilan_mobile() ? 'templates/wrapper-mobile-simple' : 'templates/wrapper-admin', $data);
+  }
+
+  public function form_add()
+  {
+    $data = [
+      'title' => 'Tambah Data Rekap Ujian',
+      'user' => $this->db->get_where('login', ['username' => $this->session->userdata('username')])->row_array(),
+      'kelas' => $this->Kelas_M->getAllKelas(),
+      'target_ujian' => $this->Target_ujian_M->getAllTargetUjian(),
+      'santri' => $this->Santri_M->getAllSantri(),
+      'periode_ujian' => $this->Periode_ujian_M->getAllPeriodeUjian(),
+      // 'rekap_ujian' => $this->Rekap_ujian_M->getAllRekapUjian(),
+      'isi' => tampilan_mobile() ? 'ujian/mobile-add_rekap_ujian' : 'ujian/v-add_rekap_ujian',
+    ];
+
+    $this->load->view(tampilan_mobile() ? 'templates/wrapper-mobile-simple' : 'templates/wrapper-admin', $data);
+  }
+
+  public function getTargetByKelas()
+  {
+    $id_kelas = $this->input->post('id_kelas');
+
+    $targetujian = $this->Target_ujian_kelas_M->getTargetUjianByKelas($id_kelas);
+
+    echo "<option value=" . "" . ">" . "-- Pilih Target Ujian --" . "</option>";
+    foreach ($targetujian as $tu) {
+      echo "<option value='" . $tu['IdTargetUjian'] . "'id_targetujian='" . $tu['IdTargetUjian'] . "' >" . $tu['Keterangan'] . "</option>";
+    }
+  }
+
+
+  public function getSantriByKelas()
+  {
+    $id_kelas = $this->input->post('id_kelas');
+
+    $listsantri = $this->Santri_M->getSantriKelas($id_kelas);
+
+    echo "<option value=" . "" . ">" . "-- Pilih Santri --" . "</option>";
+    foreach ($listsantri as $santri) {
+      echo "<option value='" . $santri['IdSiswa'] . "'id_santri='" . $santri['IdSiswa'] . "' >" . $santri['NamaLengkap'] . "</option>";
+    }
+  }
+
+  public function predikat_ket()
+  {
+    $nilai = $this->input->post('Nilai');
+    // return $nilai;
+    $hasilquery = $this->Rekap_ujian_M->betwenNilai($nilai);
+    // $json = json_encode($data);
+    $hasil = [
+      'PredikatNilai' => $hasilquery['PredikatNilai'],
+      'KetNilai' => $hasilquery['KetNilai'],
+    ];
+    echo json_encode($hasil);
+    // return $pk;
+  }
+
+  // Add a new item
+  public function add()
+  {
+    $data = [
+      'IdTargetUjian' => $this->input->post('target_ujian'),
+      'IdSiswa' => $this->input->post('nama_santri'),
+      'IdPeriodeUjian' => $this->input->post('periode_ujian'),
+      'Nilai' => $this->input->post('nilai'),
+      'Predikat' => $this->input->post('predikat'),
+      'Keterangan' => $this->input->post('keterangan'),
+    ];
+    // check($data);
+    $this->Rekap_ujian_M->addRekapUjian($data);
+    redirect('ujian/rekap_ujian?pesan=' . rawurlencode('Berhasil ditambahkan!'));
+  }
+
+  public function form_update($id)
+  {
+    $data = [
+      'title' => 'Ubah Data Rekap Ujian',
+      'user' => $this->db->get_where('login', ['username' => $this->session->userdata('username')])->row_array(),
+      'rekap_ujian' => $this->Rekap_ujian_M->getRekapUjian($id),
+      'target_ujian' => $this->Target_ujian_M->getAllTargetUjian(),
+      'santri' => $this->Santri_M->getAllSantri(),
+      'periode_ujian' => $this->Periode_ujian_M->getAllPeriodeUjian(),
+      'isi' => tampilan_mobile() ? 'ujian/mobile-update_rekap_ujian' : 'ujian/v-update_rekap_ujian',
+    ];
+    // check($data['rekap_ujian']);
+    // var_dump($data['rekap_ujian']);
+
+    $this->load->view(tampilan_mobile() ? 'templates/wrapper-mobile-simple' : 'templates/wrapper-admin', $data);
+  }
+
+  //Update one item
+  public function update()
+  {
+    $id = $this->input->post('IdUjian');
+    $data = [
+      'IdUjian' => $id,
+      'IdTargetUjian' => $this->input->post('target_ujian'),
+      'IdSiswa' => $this->input->post('nama_santri'),
+      'IdPeriodeUjian' => $this->input->post('periode_ujian'),
+      'Nilai' => $this->input->post('nilai'),
+      'Predikat' => $this->input->post('predikat'),
+      'Keterangan' => $this->input->post('keterangan'),
+    ];
+    // check($data);
+    $this->Rekap_ujian_M->updateRekapUjian($data);
+    redirect('ujian/rekap_ujian?pesan=' . rawurlencode('Berhasil diubah!'));
+  }
+
+  //Delete one item
+  public function delete($id)
+  {
+    $data = ['IdUjian' => $id];
+    $this->Rekap_ujian_M->deleteRekapUjian($data);
+    redirect('ujian/rekap_ujian?pesan=' . rawurlencode('Berhasil dihapus!'));
+  }
+
+  public function cari_data()
+  {
+    $nama_santri = $this->input->post('nama_santri');
+    $pesan = $this->input->get('pesan') ?: $this->session->flashdata('pesan');
+    $data = [
+      'title' => 'Rekap Ujian',
+      'user' => $this->db->get_where('login', ['username' => $this->session->userdata('username')])->row_array(),
+      'target_ujian' => $this->Target_ujian_M->getAllTargetUjian(),
+      'santri' => $this->Santri_M->getAllSantri(),
+      'periode_ujian' => $this->Periode_ujian_M->getAllPeriodeUjian(),
+      'rekap_ujian' => $this->Rekap_ujian_M->getRekapUjianByNamaSantri($nama_santri),
+      'pesan' => $pesan,
+      'isi' => tampilan_mobile() ? 'ujian/mobile-rekap_ujian' : 'ujian/v-rekap_ujian',
+    ];
+    // check($data['hasil_ujian']);
+    $this->load->view(tampilan_mobile() ? 'templates/wrapper-mobile-simple' : 'templates/wrapper-admin', $data);
+  }
+
+  public function reset_data()
+  {
+    $this->Rekap_ujian_M->kosongkanRekapUjian();
+    redirect('ujian/rekap_ujian?pesan=' . rawurlencode('Berhasil direset!'));
+  }
+
+  public function export_excel()
+  {
+    $data = [
+      'title' => 'Rekap Ujian',
+      'user' => $this->db->get_where('login', ['username' => $this->session->userdata('username')])->row_array(),
+      'target_ujian' => $this->Target_ujian_M->getAllTargetUjian(),
+      'santri' => $this->Santri_M->getAllSantri(),
+      'periode_ujian' => $this->Periode_ujian_M->getAllPeriodeUjian(),
+      'rekap_ujian' => $this->Rekap_ujian_M->getAllRekapUjian(),
+    ];
+
+    $this->load->view('export/excel/ujian/rekap_ujian', $data);
+  }
+}
+
+/* End of file Rekap_Ujian.php */

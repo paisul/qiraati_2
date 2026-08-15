@@ -1,0 +1,57 @@
+.DS_Store
+
+application/cache/*
+!application/cache/index.html
+
+application/logs/*
+!application/logs/index.html
+
+!application/*/.htaccess
+
+composer.lock
+
+user_guide_src/build/*
+user_guide_src/cilexer/build/*
+user_guide_src/cilexer/dist/*
+user_guide_src/cilexer/pycilexer.egg-info/*
+/vendor/
+
+# IDE Files
+#-------------------------
+/nbproject/
+.idea/*
+
+## Sublime Text cache files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+/tests/tests/
+/tests/results/
+
+# Local tool workspace (contains credentials, must not be committed)
+/.zcode/
+
+# Foto/tanda tangan/logo upload - sengaja TIDAK di-git (lihat upload_helper.php): file di sini
+# sekarang disimpan fisik di folder sibling "qiroati_uploads/" di luar repo ini, supaya tidak ikut
+# terhapus saat cPanel Git Version Control mem-"Deploy HEAD Commit" (folder ini cuma tersisa
+# sebagai lokasi lama, dibiarkan kosong).
+/assets/upload/
+
+# Local/production secrets
+/application/config/database.php
+/.env
+
+# Database dumps and deployment archives
+*.sql
+*.sql.gz
+*.zip
+*.tar
+*.tar.gz
+*.bak
+*.bak-*
+
+# User-generated uploads stored outside the repository
+/qiroati_uploads/
+/uploads/

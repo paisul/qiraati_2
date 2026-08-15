@@ -1,0 +1,101 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Hasil_ujian_M extends CI_Model
+{
+
+  //* Reset Data HasilUjian
+  public function kosongkanHasilUjian()
+  {
+    return $this->db->truncate('hasilujian');
+  }
+
+  public function getAllHasilUjian()
+  {
+    $this->db->select('hu.*,s.NamaLengkap,pu.*,kls.*,p.periode');
+    $this->db->from('hasilujian hu');
+    $this->db->join('siswa s', 's.IdSiswa = hu.IdSiswa', 'left');
+    $this->db->join('periodeujian pu', 'pu.IdPeriodeUjian = hu.IdPeriodeUjian', 'left');
+    $this->db->join('periode p', 'p.IdPeriode = pu.IdPeriode', 'left');
+    $this->db->join('kelas kls', 'pu.IdKelas = kls.IdKelas', 'left');
+    return $this->db->get()->result_array();
+  }
+
+  public function getHasilUjianByNamaSantri($nama_santri)
+  {
+    $this->db->select('hu.*,s.NamaLengkap,pu.*,kls.*,p.periode');
+    $this->db->from('hasilujian hu');
+    $this->db->join('siswa s', 's.IdSiswa = hu.IdSiswa', 'left');
+    $this->db->join('periodeujian pu', 'pu.IdPeriodeUjian = hu.IdPeriodeUjian', 'left');
+    $this->db->join('periode p', 'p.IdPeriode = pu.IdPeriode', 'left');
+    $this->db->join('kelas kls', 'pu.IdKelas = kls.IdKelas', 'left');
+    $this->db->like('s.NamaLengkap', $nama_santri);
+    return $this->db->get()->result_array();
+  }
+
+
+  public function getHasilUjianById($IdHasil)
+  {
+    $this->db->select('hu.*,s.NamaLengkap,pu.*,kls.*,p.periode');
+    $this->db->from('hasilujian hu');
+    $this->db->join('siswa s', 's.IdSiswa = hu.IdSiswa', 'left');
+    $this->db->join('periodeujian pu', 'pu.IdPeriodeUjian = hu.IdPeriodeUjian', 'left');
+    $this->db->join('periode p', 'p.IdPeriode = pu.IdPeriode', 'left');
+    $this->db->join('kelas kls', 'pu.IdKelas = kls.IdKelas', 'left');
+    $this->db->where('hu.IdHasil', $IdHasil);
+    return $this->db->get()->result_array();
+  }
+
+  public function addHasilUjianIndividu($data)
+  {
+    $this->db->insert('hasilujian', $data);
+  }
+
+  public function addHasilUjian($data)
+  {
+    $this->db->insert_batch('hasilujian', $data);
+  }
+
+  public function perankingan_kelas($IdKelas, $IdPeriodeUjian)
+  {
+    $query = $this->db->query('SELECT `hasilujian`.`IdHasil`,`hasilujian`.`IdSiswa`,`hasilujian`.`IdPeriodeUjian`,`hasilujian`.`Total`,`hasilujian`.`Reward`,`periode`.`Periode`,`hasilujian`.`Rata-rata`,`siswa`.`NamaLengkap`,`kelas`.`NamaKelas`,	( SELECT FIND_IN_SET( `hasilujian`.`Rata-rata`,
+    ( select
+    group_concat(distinct `Rata-rata`
+    order by `Rata-rata` DESC)
+    from `hasilujian`))
+    ) as Ranking
+    FROM `hasilujian`
+    JOIN `siswa` ON `siswa`.`IdSiswa`=`hasilujian`.`IdSiswa`
+    JOIN `kelas` ON `kelas`.`IdKelas`=`siswa`.`IdKelas`
+    JOIN `periodeujian` ON `periodeujian`.`IdPeriodeUjian`=`hasilujian`.`IdPeriodeUjian`
+    JOIN `periode` ON `periode`.`IdPeriode`=`periodeujian`.`IdPeriode`
+    WHERE `kelas`.`IdKelas`="' . $IdKelas . '"
+    AND `hasilujian`.`IdPeriodeUjian`="' . $IdPeriodeUjian . '"
+    ORDER BY Ranking ASC,`kelas`.`IdKelas` ASC');
+    return $query->result_array();
+  }
+
+  public function Update_Perankingan($data)
+  {
+    $this->db->update_batch('hasilujian', $data, 'IdHasil');
+  }
+
+  public function updateReward($data)
+  {
+    $this->db->where('IdHasil', $data['IdHasil']);
+    // Nama tabel sebenarnya "hasilujian" (huruf kecil semua) - MySQL di Windows/XAMPP tidak
+    // mempedulikan besar-kecil huruf nama tabel (jadi "HasilUjian" tetap jalan lokal), tapi di
+    // Linux (server live) huruf besar-kecil DIBEDAKAN, jadi query ini gagal dengan "table doesn't
+    // exist" -> error 500. Sama persis kelas bug-nya dengan controller/folder case-sensitive yang
+    // sudah pernah ditemukan sebelumnya, cuma sekarang di nama tabel.
+    $this->db->update('hasilujian', $data);
+  }
+
+  public function deleteHasilUjian($data)
+  {
+    $this->db->where('IdHasil', $data['IdHasil']);
+    $this->db->delete('hasilujian', $data);
+  }
+}
+
+/* End of file Hasil_ujian_M.php */
