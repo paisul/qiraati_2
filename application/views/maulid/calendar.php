@@ -10,8 +10,10 @@ $mobile_calendar = !empty($mobile_calendar);
       <?php endforeach; ?>
     </div>
     <div class="maulid-calendar-days" role="rowgroup">
+      <?php for ($blank = 0; $blank < $calendar_start_offset; $blank++) : ?><div class="maulid-day is-empty" aria-hidden="true"></div><?php endfor; ?>
       <?php for ($day = 1; $day <= 30; $day++) :
         $b = $bookings[$day] ?? null;
+        $masehi = $gregorian_dates[$day];
         $maps_url_tampil = $b ? ($b['latitude'] !== null && $b['longitude'] !== null
           ? 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($b['latitude'] . ',' . $b['longitude'])
           : $b['maps_url']) : null;
@@ -21,13 +23,15 @@ $mobile_calendar = !empty($mobile_calendar);
             <button type="button" class="maulid-day-book"
               <?php if ($mobile_calendar) : ?>data-toggle-target="#bookDay<?= $day; ?>"<?php else : ?>data-toggle="modal" data-target="#bookDay<?= $day; ?>"<?php endif; ?>
               aria-label="Booking tanggal <?= $day; ?> Rabiul Awal">
-              <span class="maulid-day-number"><?= $day; ?></span>
+              <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
+              <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
               <span class="maulid-status available">Tersedia</span>
               <span class="maulid-tap-hint">Tekan untuk booking</span>
             </button>
           <?php else : ?>
             <div class="maulid-day-content">
-              <span class="maulid-day-number"><?= $day; ?></span>
+              <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
+              <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
               <?php if ($b) : ?>
                 <span class="maulid-status booked">Dibooking</span>
                 <strong class="maulid-booker"><?= html_escape($b['booker_name']); ?></strong>
@@ -41,7 +45,8 @@ $mobile_calendar = !empty($mobile_calendar);
           <?php endif; ?>
         </div>
       <?php endfor; ?>
-      <?php for ($empty = 30; $empty < 35; $empty++) : ?><div class="maulid-day is-empty" aria-hidden="true"></div><?php endfor; ?>
+      <?php $trailing = (7 - (($calendar_start_offset + 30) % 7)) % 7; ?>
+      <?php for ($empty = 0; $empty < $trailing; $empty++) : ?><div class="maulid-day is-empty" aria-hidden="true"></div><?php endfor; ?>
     </div>
   </div>
 </div>

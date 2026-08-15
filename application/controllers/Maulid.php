@@ -23,12 +23,15 @@ class Maulid extends CI_Controller
         $bookings[(int) $row['rabiul_awal_day']] = $row;
       }
     }
+    $gregorian_dates = $this->rabiulAwalGregorianDates($year);
 
     $data = [
       'title' => $is_admin ? 'Rekap Booking Maulid' : 'Booking Maulid',
       'user' => $is_admin ? $user : $this->getWali(),
       'year' => $year,
       'bookings' => $bookings,
+      'gregorian_dates' => $gregorian_dates,
+      'calendar_start_offset' => $gregorian_dates[1]['weekday'],
       'rows' => $rows,
       'is_admin' => $is_admin,
       'current_user_id' => (int) $user['IdUser'],
@@ -172,6 +175,54 @@ class Maulid extends CI_Controller
   private function defaultHijriYear()
   {
     return (int) floor((date('Y') - 622) * 33 / 32);
+  }
+
+  /**
+   * Konversi kalender Hijriah sipil (tabular) ke Gregorian tanpa API/ekstensi intl.
+   * Hasil kalender rukyat resmi setempat dapat berbeda satu hari.
+   */
+  private function rabiulAwalGregorianDates($hijri_year)
+  {
+    $bulan_masehi = [1 => 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    $dates = [];
+
+    for ($day = 1; $day <= 30; $day++) {
+      // Rabiul Awal adalah bulan ke-3. Epoch Hijriah sipil: JDN 1948440.
+      $jdn = $day
+        + (int) ceil(29.5 * (3 - 1))
+        + ((int) $hijri_year - 1) * 354
+        + (int) floor((3 + 11 * (int) $hijri_year) / 30)
+        + 1948439;
+      $gregorian = $this->gregorianFromJdn($jdn);
+      $timestamp = mktime(12, 0, 0, $gregorian['month'], $gregorian['day'], $gregorian['year']);
+
+      $dates[$day] = [
+        'day' => $gregorian['day'],
+        'month' => $gregorian['month'],
+        'year' => $gregorian['year'],
+        'label' => $gregorian['day'] . ' ' . $bulan_masehi[$gregorian['month']] . ' ' . $gregorian['year'],
+        // date('w'): 0=Ahad sampai 6=Sabtu, sama dengan urutan header kalender.
+        'weekday' => (int) date('w', $timestamp),
+      ];
+    }
+
+    return $dates;
+  }
+
+  private function gregorianFromJdn($jdn)
+  {
+    $l = (int) $jdn + 68569;
+    $n = intdiv(4 * $l, 146097);
+    $l = $l - intdiv(146097 * $n + 3, 4);
+    $i = intdiv(4000 * ($l + 1), 1461001);
+    $l = $l - intdiv(1461 * $i, 4) + 31;
+    $j = intdiv(80 * $l, 2447);
+    $day = $l - intdiv(2447 * $j, 80);
+    $l = intdiv($j, 11);
+    $month = $j + 2 - 12 * $l;
+    $year = 100 * ($n - 49) + $i + $l;
+
+    return ['year' => $year, 'month' => $month, 'day' => $day];
   }
 
   private function requirePost()
