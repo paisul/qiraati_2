@@ -51,6 +51,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.tar.gz
 *.bak
 *.bak-*
+*.map
 
 # User-generated uploads stored outside the repository
 /qiroati_uploads/
