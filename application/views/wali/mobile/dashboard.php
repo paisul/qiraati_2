@@ -58,6 +58,12 @@ $menu_model_shortcut = new MenuSidebar_M();
         <span>Statistik Publik</span>
       </a>
     <?php endif; ?>
+    <?php if ($menu_model_shortcut->isUrlAktif('maulid', 'wali') && $menu_model_shortcut->isTampilDashboard('maulid', 'wali')) : ?>
+      <a href="<?= base_url('maulid'); ?>" class="m-shortcut">
+        <i class="fas fa-calendar-check"></i>
+        <span>Booking Maulid</span>
+      </a>
+    <?php endif; ?>
   </div>
 
   <!-- Ringkasan absen bulan ini -->
