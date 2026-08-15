@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS maulid_bookings (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT(11) NOT NULL,
+  booker_name VARCHAR(101) NOT NULL,
+  hijri_year INT UNSIGNED NOT NULL,
+  rabiul_awal_day TINYINT UNSIGNED NOT NULL,
+  location_name VARCHAR(255) NOT NULL,
+  latitude DECIMAL(10,8) NULL,
+  longitude DECIMAL(11,8) NULL,
+  maps_url TEXT NULL,
+  notes TEXT NULL,
+  status ENUM('booked','cancelled') NOT NULL DEFAULT 'booked',
+  active_slot TINYINT UNSIGNED NULL DEFAULT 1,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_maulid_active_date (hijri_year, rabiul_awal_day, active_slot),
+  KEY idx_maulid_user (user_id),
+  KEY idx_maulid_year_status (hijri_year, status),
+  CONSTRAINT chk_maulid_day CHECK (rabiul_awal_day BETWEEN 1 AND 30),
+  CONSTRAINT chk_maulid_lat CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
+  CONSTRAINT chk_maulid_lng CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -122,6 +122,31 @@ function pastikan_tabel_menu_sidebar($db)
   pastikan_menu_dana_submenu($db);
   pastikan_label_menu_dana($db);
   pastikan_menu_dana_submenu_musyrif($db);
+  pastikan_menu_booking_maulid($db);
+}
+
+// Booking Maulid tersedia untuk Wali (membuat/membatalkan miliknya) dan Admin (rekap/pengelolaan).
+function pastikan_menu_booking_maulid($db)
+{
+  $daftar = [
+    ['maulid_admin', 'admin', 1],
+    ['maulid_wali', 'wali', 0],
+  ];
+
+  foreach ($daftar as $item) {
+    list($kunci, $grup, $hanya_admin) = $item;
+    if ($db->where('KunciMenu', $kunci)->count_all_results('menu_sidebar') > 0) {
+      continue;
+    }
+    $maks = $db->select_max('Urutan')->where('Grup', $grup)->where('ParentKunci', null)->get('menu_sidebar')->row_array();
+    $db->insert('menu_sidebar', [
+      'KunciMenu' => $kunci, 'ParentKunci' => null, 'Label' => 'Booking Maulid',
+      'Url' => 'maulid', 'Icon' => 'fas fa-fw fa-calendar-check',
+      'Urutan' => (int) ($maks['Urutan'] ?? 0) + 1, 'Aktif' => 1,
+      'HanyaAdmin' => $hanya_admin, 'Grup' => $grup,
+      'TampilDashboard' => 1, 'TampilMenuBawah' => 0,
+    ]);
+  }
 }
 
 // Sama seperti pastikan_menu_dana_submenu() tapi untuk grup 'musyrif' (dipakai Musyrif & Guru) -
