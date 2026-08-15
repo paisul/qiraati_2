@@ -40,7 +40,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /assets/upload/
 
 # Local/production secrets
-/application/config/database.php
+/application/config/database.local.php
 /.env
 
 # Database dumps and deployment archives
