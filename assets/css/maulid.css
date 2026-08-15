@@ -11,7 +11,9 @@
 .maulid-day-book,.maulid-day-content { width:100%; height:100%; min-height:150px; padding:10px; display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; }
 .maulid-day-book { border:0; background:#f1fff6; color:inherit; cursor:pointer; }
 .maulid-day-book:hover,.maulid-day-book:focus { background:#dff7e8; outline:3px solid #28a745; outline-offset:-3px; }
-.maulid-day-number { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:#172a3a; color:#fff; font-size:16px; font-weight:700; }
+.maulid-day-number { display:flex; align-items:center; justify-content:center; gap:2px; width:38px; height:32px; border-radius:16px; background:#172a3a; color:#fff; font-size:16px; font-weight:700; }
+.maulid-day-number small { font-size:9px; color:#bce9ff; }
+.maulid-gregorian { display:inline-block; padding:3px 7px; border-radius:5px; background:#fff0d1; color:#a45100; font-size:11px; font-weight:700; white-space:nowrap; }
 .maulid-status { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; }
 .maulid-status.available { background:#d8f3e0; color:#176b32; }
 .maulid-status.booked { background:#e2e6e9; color:#4b545c; }
@@ -27,6 +29,7 @@
   .maulid-week-day { padding:10px 3px; font-size:12px; }
   .maulid-day,.maulid-day-book,.maulid-day-content { min-height:126px; }
   .maulid-day-book,.maulid-day-content { padding:7px; gap:4px; }
-  .maulid-day-number { width:28px; height:28px; font-size:14px; }
+  .maulid-day-number { width:34px; height:28px; font-size:14px; }
+  .maulid-gregorian { padding:2px 5px; font-size:10px; }
   .maulid-booker,.maulid-location { max-width:74px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 }

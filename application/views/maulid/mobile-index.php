@@ -13,6 +13,7 @@
       <p class="m-list-sub">Geser kalender ke samping bila perlu, lalu tekan tanggal berwarna hijau untuk booking.</p>
     <?php endif; ?>
   </div>
+  <p class="m-list-sub" style="margin:0 4px 8px;">Biru tua: Hijriah. Jingga: Masehi. Konversi dapat berbeda satu hari dari penetapan resmi.</p>
 
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
 
