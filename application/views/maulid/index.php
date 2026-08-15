@@ -1,19 +1,11 @@
+<link rel="stylesheet" href="<?= base_url('assets/css/maulid.css'); ?>?v=<?= filemtime(FCPATH . 'assets/css/maulid.css'); ?>">
 <div class="content-wrapper"><div class="content pt-3"><div class="container-fluid">
   <div class="flash-data" data-flashdata="<?= html_escape($pesan ?? ''); ?>" data-title="<?= html_escape($title); ?>"></div>
   <div class="card"><div class="card-header bg-success d-flex align-items-center"><h4 class="m-0 flex-grow-1"><?= html_escape($title); ?></h4>
     <form method="get" class="form-inline"><label class="mr-2">Tahun</label><input type="number" name="tahun" min="1300" max="1700" value="<?= (int) $year; ?>" class="form-control form-control-sm mr-2" required><button class="btn btn-light btn-sm">Tampilkan</button></form>
   </div><div class="card-body">
   <?php if (!$is_admin) : ?><div class="alert alert-info">Nama booking: <strong><?= html_escape($parent_name); ?></strong>. Pilih salah satu tanggal yang tersedia.</div><?php endif; ?>
-  <div class="row">
-  <?php for ($day=1; $day<=30; $day++) : $b=$bookings[$day] ?? null; ?>
-    <div class="col-xl-3 col-lg-4 col-md-6 mb-3"><div class="card h-100 border-<?= $b ? 'secondary' : 'success'; ?>"><div class="card-body">
-      <h5><?= $day; ?> Rabiul Awal <small><?= (int) $year; ?> H</small></h5>
-      <?php if ($b) : ?><span class="badge badge-secondary mb-2">Sudah Dibooking</span><div><strong><?= html_escape($b['booker_name']); ?></strong></div><div class="text-muted mb-2"><?= html_escape($b['location_name']); ?></div>
-        <a class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer" href="<?= html_escape($b['latitude'] !== null && $b['longitude'] !== null ? 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($b['latitude'].','.$b['longitude']) : $b['maps_url']); ?>"><i class="fas fa-map-marker-alt"></i> Lihat Lokasi</a>
-        <?php if ($is_admin || (int)$b['user_id']===$current_user_id) : ?><?= form_open('maulid/cancel/'.$b['id'], ['class'=>'d-inline']); ?><button class="btn btn-danger btn-sm" onclick="return confirm('Batalkan booking ini?')">Batalkan</button><?= form_close(); ?><?php endif; ?>
-      <?php else : ?><span class="badge badge-success mb-3">Tersedia</span><?php if (!$is_admin) : ?><button class="btn btn-success btn-sm d-block" data-toggle="modal" data-target="#bookDay<?= $day; ?>">Booking</button><?php endif; ?><?php endif; ?>
-    </div></div></div>
-  <?php endfor; ?></div>
+  <?php $mobile_calendar = false; $this->load->view('maulid/calendar'); ?>
   <?php if ($is_admin) : ?><hr><h5>Riwayat/Rekap <?= (int)$year; ?> H</h5><div class="table-responsive"><table class="table table-striped"><thead><tr><th>Tanggal</th><th>Nama Ibu/Bapak</th><th>Lokasi</th><th>Maps</th><th>Status</th><th>Aksi</th></tr></thead><tbody><?php foreach($rows as $r): ?><tr><td><?= (int)$r['rabiul_awal_day']; ?> Rabiul Awal</td><td><?= html_escape($r['booker_name']); ?></td><td><?= html_escape($r['location_name']); ?></td><td><?php if($r['maps_url']||($r['latitude'] !== null && $r['longitude'] !== null)):?><a target="_blank" rel="noopener noreferrer" href="<?= html_escape($r['latitude'] !== null && $r['longitude'] !== null?'https://www.google.com/maps/search/?api=1&query='.rawurlencode($r['latitude'].','.$r['longitude']):$r['maps_url']); ?>">Buka</a><?php endif;?></td><td><?= $r['status']==='booked'?'<span class="badge badge-success">Aktif</span>':'<span class="badge badge-secondary">Dibatalkan</span>'; ?></td><td><?php if($r['status']==='booked'): ?><button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editBooking<?= (int)$r['id']; ?>">Ubah</button><?php endif;?></td></tr><?php endforeach;?></tbody></table></div><?php endif; ?>
   </div></div>
 </div></div></div>

@@ -1,0 +1,32 @@
+.maulid-calendar-scroll { position:relative; overflow:auto; max-height:68vh; border:1px solid #d9e2e8; border-radius:12px; background:#fff; -webkit-overflow-scrolling:touch; }
+.maulid-calendar { min-width:700px; }
+.maulid-week-header,.maulid-calendar-days { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); }
+.maulid-week-header { position:sticky; top:0; z-index:5; background:#172a3a; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.18); }
+.maulid-week-day { padding:12px 6px; text-align:center; font-weight:700; border-right:1px solid rgba(255,255,255,.16); }
+.maulid-week-day:first-child { color:#ffb4b4; }
+.maulid-day { min-height:150px; border-right:1px solid #e1e7eb; border-bottom:1px solid #e1e7eb; background:#fff; }
+.maulid-day:nth-child(7n) { border-right:0; }
+.maulid-day.is-booked { background:#f4f6f7; }
+.maulid-day.is-empty { background:#eef2f4; }
+.maulid-day-book,.maulid-day-content { width:100%; height:100%; min-height:150px; padding:10px; display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; }
+.maulid-day-book { border:0; background:#f1fff6; color:inherit; cursor:pointer; }
+.maulid-day-book:hover,.maulid-day-book:focus { background:#dff7e8; outline:3px solid #28a745; outline-offset:-3px; }
+.maulid-day-number { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:#172a3a; color:#fff; font-size:16px; font-weight:700; }
+.maulid-status { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+.maulid-status.available { background:#d8f3e0; color:#176b32; }
+.maulid-status.booked { background:#e2e6e9; color:#4b545c; }
+.maulid-tap-hint { color:#218838; font-size:12px; }
+.maulid-booker { font-size:13px; line-height:1.25; }
+.maulid-location { color:#68757f; font-size:12px; line-height:1.25; }
+.maulid-map-link { font-size:12px; font-weight:600; }
+.maulid-cancel-form { margin-top:auto; }
+.maulid-cancel { border:0; border-radius:5px; padding:4px 7px; background:#dc3545; color:#fff; font-size:11px; }
+@media (max-width:767.98px) {
+  .maulid-calendar-scroll { max-height:62vh; border-radius:9px; }
+  .maulid-calendar { min-width:630px; }
+  .maulid-week-day { padding:10px 3px; font-size:12px; }
+  .maulid-day,.maulid-day-book,.maulid-day-content { min-height:126px; }
+  .maulid-day-book,.maulid-day-content { padding:7px; gap:4px; }
+  .maulid-day-number { width:28px; height:28px; font-size:14px; }
+  .maulid-booker,.maulid-location { max-width:74px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+}
