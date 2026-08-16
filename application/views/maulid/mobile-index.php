@@ -1,16 +1,6 @@
 <link rel="stylesheet" href="<?= base_url('assets/css/maulid.css'); ?>?v=<?= filemtime(FCPATH . 'assets/css/maulid.css'); ?>">
 <div class="m-content">
-  <p class="m-page-title"><?= html_escape($title); ?></p>
   <div class="flash-data" data-flashdata="<?= html_escape($pesan ?? ''); ?>" data-title="<?= html_escape($title); ?>"></div>
-
-  <div class="m-card">
-    <div class="m-list-title">Kalender <?= (int) $gregorian_year; ?> M / <?= (int) $year; ?> H</div>
-    <?php if (!$is_admin) : ?>
-      <p class="m-list-sub mt-2">Nama booking: <strong><?= html_escape($parent_name); ?></strong></p>
-      <p class="m-list-sub"><?= $has_active_booking ? 'Akun ini sudah memiliki satu booking aktif.' : 'Geser kalender ke samping, lalu pilih satu tanggal. Kamis dan Sabtu dikunci.'; ?></p>
-    <?php endif; ?>
-  </div>
-  <p class="m-list-sub" style="margin:0 4px 8px;">Biru tua: Hijriah. Jingga: Masehi. Konversi dapat berbeda satu hari dari penetapan resmi.</p>
 
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
   <?php if (!$is_admin && !$has_active_booking) $this->load->view('maulid/booking-popup'); ?>
