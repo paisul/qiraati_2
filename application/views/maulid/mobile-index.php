@@ -4,10 +4,7 @@
   <div class="flash-data" data-flashdata="<?= html_escape($pesan ?? ''); ?>" data-title="<?= html_escape($title); ?>"></div>
 
   <div class="m-card">
-    <form method="get">
-      <div class="m-field"><label>Tahun Hijriah</label><input type="number" name="tahun" min="1300" max="1700" value="<?= (int) $year; ?>" required></div>
-      <button class="m-btn">Tampilkan Kalender</button>
-    </form>
+    <div class="m-list-title">Kalender <?= (int) $gregorian_year; ?> M / <?= (int) $year; ?> H</div>
     <?php if (!$is_admin) : ?>
       <p class="m-list-sub mt-2">Nama booking: <strong><?= html_escape($parent_name); ?></strong></p>
       <p class="m-list-sub">Geser kalender ke samping bila perlu, lalu tekan tanggal berwarna hijau untuk booking.</p>
