@@ -102,6 +102,7 @@ class Maulid extends CI_Controller
     $result = $this->Maulid_model->createBooking([
       'user_id' => $level === 'Admin' ? (int) $admin_student['IdUser'] : (int) $user['IdUser'],
       'booker_name' => $level === 'Admin' ? $this->parentName($admin_student) : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali)),
+      'calendar_name' => $level === 'Admin' ? $admin_student['NamaLengkap'] : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : implode(' / ', array_column($wali['daftar_anak'], 'NamaLengkap'))),
       'hijri_year' => $year,
       'rabiul_awal_day' => $day,
       'location_name' => 'Lokasi Google Maps',

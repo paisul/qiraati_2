@@ -5,14 +5,13 @@
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
   <?php $this->load->view('maulid/booking-popup'); ?>
 
-  <?php if ($is_admin) : ?>
-    <div class="m-card">
-      <div class="m-list-title">Riwayat termasuk pembatalan</div>
+  <div class="m-card">
+      <div class="m-list-title"><?= $is_admin ? 'Riwayat termasuk pembatalan' : 'Rekap Booking'; ?></div>
       <?php foreach ($rows as $r) : ?>
         <div class="m-list-item" style="display:block">
           <strong><?= (int) $r['rabiul_awal_day']; ?> Rabiul Awal - <?= html_escape($r['booker_name']); ?></strong>
           <div class="m-list-sub"><?= html_escape($r['location_name']); ?> - <?= $r['status'] === 'booked' ? 'Aktif' : 'Dibatalkan'; ?></div>
-          <?php if ($r['status'] === 'booked') : ?>
+          <?php if ($is_admin && $r['status'] === 'booked') : ?>
             <button type="button" class="m-btn mt-2" data-toggle-target="#editBooking<?= (int) $r['id']; ?>">Ubah</button>
             <?= form_open('maulid/cancel/' . $r['id'], ['class' => 'maulid-cancel-form mt-2']); ?>
               <button type="submit" class="m-btn m-btn-danger js-maulid-cancel">Batalkan Booking</button>
@@ -31,6 +30,5 @@
         </div>
       <?php endforeach; ?>
     </div>
-  <?php endif; ?>
 </div>
 <script src="<?= base_url('assets/js/maulid.js'); ?>?v=<?= filemtime(FCPATH . 'assets/js/maulid.js'); ?>"></script>

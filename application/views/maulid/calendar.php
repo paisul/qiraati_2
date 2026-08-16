@@ -34,7 +34,7 @@ $mobile_calendar = !empty($mobile_calendar);
               <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
               <?php if ($b) : ?>
                 <span class="maulid-status booked">Dibooking</span>
-                <strong class="maulid-booker"><?= html_escape($b['booker_name']); ?></strong>
+                <strong class="maulid-booker"><?= html_escape(!empty($b['calendar_name']) ? $b['calendar_name'] : $b['booker_name']); ?></strong>
                 <span class="maulid-location"><?= html_escape($b['location_name']); ?></span>
                 <?php if ($maps_url_tampil) : ?><a class="maulid-map-link" target="_blank" rel="noopener noreferrer" href="<?= html_escape($maps_url_tampil); ?>"><i class="fas fa-map-marker-alt"></i> Lokasi</a><?php endif; ?>
                 <?php if ($is_admin || (int) $b['user_id'] === $current_user_id) : ?>
