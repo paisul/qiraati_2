@@ -4,6 +4,10 @@
   document.addEventListener('click', function (event) {
     var calendarButton = event.target.closest('.js-open-maulid-booking');
     var bookingPopup = document.getElementById('maulidBookingPopup');
+    if (calendarButton && calendarButton.getAttribute('data-already-booked-day')) {
+      window.alert('Anda sudah booking pada tanggal ' + calendarButton.getAttribute('data-already-booked-day') + ' Rabiul Awal. Satu akun hanya dapat booking satu tanggal.');
+      return;
+    }
     if (calendarButton && bookingPopup) {
       var selectedDay = calendarButton.getAttribute('data-day');
       var bookingForm = bookingPopup.querySelector('form');

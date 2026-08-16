@@ -32,6 +32,7 @@ class Maulid extends CI_Controller
       }
     }
     $gregorian_dates = $this->rabiulAwalGregorianDates($year);
+    $active_booking = $is_admin ? null : $this->Maulid_model->getActiveByUser((int) $user['IdUser'], $year);
 
     $data = [
       'title' => $is_admin ? 'Rekap Booking Maulid' : 'Booking Maulid',
@@ -44,7 +45,8 @@ class Maulid extends CI_Controller
       'rows' => $rows,
       'is_admin' => $is_admin,
       'is_musyrif' => $is_musyrif,
-      'has_active_booking' => !$is_admin && (bool) $this->Maulid_model->getActiveByUser((int) $user['IdUser'], $year),
+      'active_booking' => $active_booking,
+      'has_active_booking' => (bool) $active_booking,
       'current_user_id' => (int) $user['IdUser'],
       'parent_name' => $is_admin ? '' : ($is_musyrif ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'student_names' => ($is_admin || $is_musyrif) ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
