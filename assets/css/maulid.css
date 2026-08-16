@@ -4,7 +4,7 @@
 .maulid-week-header { position:sticky; top:0; z-index:5; background:#172a3a; color:#fff; box-shadow:0 2px 5px rgba(0,0,0,.18); }
 .maulid-week-day { padding:12px 6px; text-align:center; font-weight:700; border-right:1px solid rgba(255,255,255,.16); }
 .maulid-week-day:first-child { color:#ffb4b4; }
-.maulid-day { min-height:150px; border-right:1px solid #e1e7eb; border-bottom:1px solid #e1e7eb; background:#fff; }
+.maulid-day { position:relative; min-height:150px; border-right:1px solid #e1e7eb; border-bottom:1px solid #e1e7eb; background:#fff; }
 .maulid-day:nth-child(7n) { border-right:0; }
 .maulid-day.is-booked { background:#f4f6f7; }
 .maulid-day.is-locked { background:#f5e8e8; }
@@ -15,7 +15,8 @@
 .maulid-day-book:hover,.maulid-day-book:focus { background:#dff7e8; outline:3px solid #28a745; outline-offset:-3px; }
 .maulid-booked-map { color:inherit; text-decoration:none; cursor:pointer; transition:background .18s ease; }
 .maulid-booked-map:hover,.maulid-booked-map:focus { background:#e5f0f7; color:inherit; text-decoration:none; outline:3px solid #4387b5; outline-offset:-3px; }
-.maulid-day.is-booked .maulid-cancel-form { padding:0 10px 9px; }
+.maulid-day.has-cancel .maulid-day-content { padding-bottom:46px; }
+.maulid-day.has-cancel .maulid-cancel-form { position:absolute; z-index:3; right:9px; bottom:8px; left:9px; margin:0; padding:0; }
 .maulid-day-number { display:flex; align-items:center; justify-content:center; gap:2px; width:38px; height:32px; border-radius:16px; background:#172a3a; color:#fff; font-size:16px; font-weight:700; }
 .maulid-day-number small { font-size:9px; color:#bce9ff; }
 .maulid-gregorian { display:inline-block; padding:3px 7px; border-radius:5px; background:#fff0d1; color:#a45100; font-size:11px; font-weight:700; white-space:nowrap; }
@@ -29,7 +30,7 @@
 .maulid-location { color:#68757f; font-size:12px; line-height:1.25; }
 .maulid-map-link { font-size:12px; font-weight:600; }
 .maulid-cancel-form { margin-top:auto; }
-.maulid-cancel { border:0; border-radius:5px; padding:4px 7px; background:#dc3545; color:#fff; font-size:11px; }
+.maulid-cancel { width:100%; border:0; border-radius:6px; padding:7px 8px; background:#dc3545; color:#fff; font-size:11px; font-weight:700; cursor:pointer; }
 .m-content .form-group { margin-bottom:14px; }
 .m-content .form-group label { display:block; margin-bottom:6px; color:var(--heading); font-size:13px; font-weight:600; }
 .m-content .form-control { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--card-bg); color:var(--text); font-size:14px; }

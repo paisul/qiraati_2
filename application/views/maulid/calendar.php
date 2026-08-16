@@ -20,7 +20,7 @@ $mobile_calendar = !empty($mobile_calendar);
           ? 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($b['latitude'] . ',' . $b['longitude'])
           : $b['maps_url']) : null;
       ?>
-        <div class="maulid-day <?= $b ? 'is-booked' : ($is_locked_day ? 'is-locked' : 'is-available'); ?>" role="gridcell">
+        <div class="maulid-day <?= $b ? 'is-booked' : ($is_locked_day ? 'is-locked' : 'is-available'); ?><?= ($b && ($is_admin || (int) $b['user_id'] === $current_user_id)) ? ' has-cancel' : ''; ?>" role="gridcell">
           <?php if ($can_book) : ?>
             <button type="button" class="maulid-day-book js-open-maulid-booking" data-day="<?= $day; ?>"<?= (!$is_admin && $has_active_booking) ? ' data-already-booked-day="' . (int) $active_booking['rabiul_awal_day'] . '"' : ''; ?> aria-label="Booking tanggal <?= $day; ?> Rabiul Awal">
               <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
@@ -35,7 +35,7 @@ $mobile_calendar = !empty($mobile_calendar);
               <strong class="maulid-booker"><?= html_escape(!empty($b['calendar_name']) ? $b['calendar_name'] : $b['booker_name']); ?></strong>
             <?= $maps_url_tampil ? '</a>' : '</div>'; ?>
             <?php if ($is_admin || (int) $b['user_id'] === $current_user_id) : ?>
-              <?= form_open('maulid/cancel/' . $b['id'], ['class' => 'maulid-cancel-form']); ?><button type="submit" class="maulid-cancel js-maulid-cancel">Batalkan</button><?= form_close(); ?>
+              <?= form_open('maulid/cancel/' . $b['id'], ['class' => 'maulid-cancel-form']); ?><button type="submit" class="maulid-cancel js-maulid-cancel">Batalkan Booking</button><?= form_close(); ?>
             <?php endif; ?>
           <?php else : ?>
             <div class="maulid-day-content">
