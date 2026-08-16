@@ -1,4 +1,6 @@
 (function () {
+  var bookingMap = null;
+
   document.addEventListener('click', function (event) {
     var calendarButton = event.target.closest('.js-open-maulid-booking');
     var bookingPopup = document.getElementById('maulidBookingPopup');
@@ -8,11 +10,13 @@
       var dayInput = bookingPopup.querySelector('.js-maulid-booking-day');
       var popupTitle = bookingPopup.querySelector('.js-maulid-booking-title');
       var existingMapPreview = bookingPopup.querySelector('.js-map-preview');
-      var existingMapFrame = bookingPopup.querySelector('.js-map-frame');
 
       if (bookingForm) bookingForm.reset();
       if (existingMapPreview) existingMapPreview.hidden = true;
-      if (existingMapFrame) existingMapFrame.removeAttribute('src');
+      if (bookingMap) {
+        bookingMap.remove();
+        bookingMap = null;
+      }
       if (dayInput) dayInput.value = selectedDay;
       if (popupTitle) popupTitle.textContent = 'Booking ' + selectedDay + ' Rabiul Awal';
 
@@ -47,9 +51,32 @@
       form.querySelector('.js-longitude').value = longitude;
       form.querySelector('[name="maps_url"]').value = 'https://www.google.com/maps?q=' + latitude + ',' + longitude;
       var mapPreview = form.querySelector('.js-map-preview');
-      var mapFrame = form.querySelector('.js-map-frame');
-      if (mapFrame) mapFrame.src = 'https://maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=17&output=embed';
       if (mapPreview) mapPreview.hidden = false;
+      var mapCanvas = form.querySelector('.js-map-canvas');
+      if (mapCanvas && window.L) {
+        bookingMap = window.L.map(mapCanvas, {
+          center: [latitude, longitude],
+          zoom: 17,
+          dragging: true,
+          touchZoom: true,
+          scrollWheelZoom: false,
+          doubleClickZoom: false
+        });
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap'
+        }).addTo(bookingMap);
+        bookingMap.on('moveend', function () {
+          var center = bookingMap.getCenter();
+          var selectedLatitude = center.lat.toFixed(8);
+          var selectedLongitude = center.lng.toFixed(8);
+          form.querySelector('.js-latitude').value = selectedLatitude;
+          form.querySelector('.js-longitude').value = selectedLongitude;
+          form.querySelector('[name="maps_url"]').value = 'https://www.google.com/maps?q=' + selectedLatitude + ',' + selectedLongitude;
+          status.textContent = 'Titik tengah peta sudah dipilih. Geser lagi jika belum sesuai.';
+        });
+        window.setTimeout(function () { bookingMap.invalidateSize(); }, 50);
+      }
       status.textContent = 'Lokasi Google Maps berhasil diambil (akurasi sekitar ' + Math.round(position.coords.accuracy) + ' meter).';
       button.disabled = false;
     }, function () {
