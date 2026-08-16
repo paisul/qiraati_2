@@ -89,6 +89,7 @@ class Maulid extends CI_Controller
       $this->back($year, 'Hari Kamis dan Sabtu dikunci dan tidak dapat dibooking.');
     }
 
+    $replace_existing = $this->input->post('replace_existing') === '1';
     $result = $this->Maulid_model->createBooking([
       'user_id' => (int) $user['IdUser'],
       'booker_name' => $level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali),
@@ -103,10 +104,10 @@ class Maulid extends CI_Controller
       'active_slot' => 1,
       'created_at' => date('Y-m-d H:i:s'),
       'updated_at' => date('Y-m-d H:i:s'),
-    ]);
+    ], $replace_existing);
 
     $message = $result['ok']
-      ? 'Booking Maulid berhasil disimpan.'
+      ? ($replace_existing ? 'Hari booking Maulid berhasil diganti.' : 'Booking Maulid berhasil disimpan.')
       : ($result['already_booked'] ? 'Satu akun hanya dapat memiliki satu booking aktif.' : ($result['duplicate'] ? "Tanggal {$day} Rabiul Awal sudah dibooking oleh user lain. Silakan pilih tanggal yang masih tersedia." : 'Booking gagal disimpan. Silakan coba lagi.'));
     $this->back($year, $message);
   }
