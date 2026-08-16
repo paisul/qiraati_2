@@ -5,6 +5,7 @@
 <div class="form-group"><label>Lokasi Google Maps *</label><input type="url" class="form-control" name="maps_url" placeholder="Tempel link Google Maps di sini"><small class="form-text text-muted js-location-status">Tempel link Google Maps atau gunakan lokasi perangkat.</small></div>
 <button type="button" class="btn btn-outline-primary btn-block js-use-location"><i class="fas fa-crosshairs"></i> Gunakan Lokasi Saya</button>
 <div class="maulid-map-preview js-map-preview" hidden>
-  <iframe class="js-map-frame" title="Pratinjau titik lokasi" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  <div class="maulid-map-confirm"><i class="fas fa-map-marker-alt"></i> Pastikan titik pada peta sudah sesuai sebelum menyimpan.</div>
+  <div class="maulid-map-canvas js-map-canvas" aria-label="Geser peta untuk menentukan titik lokasi"></div>
+  <div class="maulid-map-center-pin" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+  <div class="maulid-map-confirm"><i class="fas fa-hand-pointer"></i> Geser peta dengan satu jari. Titik yang dipilih selalu berada tepat di tengah.</div>
 </div>
