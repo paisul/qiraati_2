@@ -50,6 +50,7 @@ class Maulid extends CI_Controller
       'current_user_id' => (int) $user['IdUser'],
       'parent_name' => $is_admin ? ($user['username'] ?? 'Admin') : ($is_musyrif ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'student_names' => ($is_admin || $is_musyrif) ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
+      'admin_students' => $is_admin ? $this->db->select('IdSiswa, NamaLengkap')->order_by('NamaLengkap', 'asc')->get('siswa')->result_array() : [],
       'pesan' => $this->input->get('pesan') ?: $this->session->flashdata('pesan'),
       'isi' => tampilan_mobile() ? 'maulid/mobile-index' : 'maulid/index',
     ];
@@ -77,6 +78,14 @@ class Maulid extends CI_Controller
     $lat = $this->coordinate($this->input->post('latitude'), -90, 90);
     $lng = $this->coordinate($this->input->post('longitude'), -180, 180);
     $maps_url = trim((string) $this->input->post('maps_url', true));
+    $admin_student = null;
+    if ($level === 'Admin') {
+      $admin_student_id = filter_var($this->input->post('admin_student_id'), FILTER_VALIDATE_INT);
+      $admin_student = $admin_student_id ? $this->db->select('IdSiswa, NamaLengkap')->get_where('siswa', ['IdSiswa' => $admin_student_id])->row_array() : null;
+      if (!$admin_student) {
+        $this->back($year, 'Nama Santri wajib dipilih.');
+      }
+    }
 
     if ($year !== self::BOOKING_HIJRI_YEAR || $day === false || (($lat === null || $lng === null) && $maps_url === '')) {
       $this->back($year, 'Tanggal dan lokasi Google Maps wajib diisi dengan benar.');
@@ -92,7 +101,7 @@ class Maulid extends CI_Controller
     $replace_existing = $this->input->post('replace_existing') === '1';
     $result = $this->Maulid_model->createBooking([
       'user_id' => (int) $user['IdUser'],
-      'booker_name' => $level === 'Admin' ? ($user['username'] ?? 'Admin') : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali)),
+      'booker_name' => $level === 'Admin' ? $admin_student['NamaLengkap'] : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'hijri_year' => $year,
       'rabiul_awal_day' => $day,
       'location_name' => 'Lokasi Google Maps',

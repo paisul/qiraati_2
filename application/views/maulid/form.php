@@ -1,6 +1,6 @@
 <input type="hidden" name="hijri_year" value="<?= (int)$year; ?>"><input type="hidden" class="js-maulid-booking-day" name="rabiul_awal_day" value="<?= (int)$form_day; ?>"><input type="hidden" class="js-maulid-replace-booking" name="replace_existing" value="0">
 <?php if (!empty($is_admin)) : ?>
-<div class="form-group"><label>Nama Admin</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
+<div class="form-group"><label>Nama Santri *</label><select class="form-control" name="admin_student_id" required><option value="">Pilih Nama Santri</option><?php foreach ($admin_students as $student) : ?><option value="<?= (int) $student['IdSiswa']; ?>"><?= html_escape($student['NamaLengkap']); ?></option><?php endforeach; ?></select></div>
 <?php elseif (!empty($is_musyrif)) : ?>
 <div class="form-group"><label>Nama Musyrif</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
 <?php else : ?>
