@@ -62,9 +62,9 @@
           scrollWheelZoom: false,
           doubleClickZoom: false
         });
-        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
           maxZoom: 19,
-          attribution: '&copy; OpenStreetMap'
+          attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
         }).addTo(bookingMap);
         bookingMap.on('moveend', function () {
           var center = bookingMap.getCenter();
