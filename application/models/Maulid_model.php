@@ -11,11 +11,8 @@ class Maulid_model extends CI_Model
 
   private function pastikanTabel()
   {
-    if ($this->db->table_exists('maulid_bookings')) {
-      return;
-    }
-
-    $this->db->query("CREATE TABLE maulid_bookings (
+    if (!$this->db->table_exists('maulid_bookings')) {
+      $this->db->query("CREATE TABLE maulid_bookings (
       id INT UNSIGNED NOT NULL AUTO_INCREMENT,
       user_id INT(11) NOT NULL,
       booker_name VARCHAR(101) NOT NULL,
@@ -37,7 +34,19 @@ class Maulid_model extends CI_Model
       CONSTRAINT chk_maulid_day CHECK (rabiul_awal_day BETWEEN 1 AND 30),
       CONSTRAINT chk_maulid_lat CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
       CONSTRAINT chk_maulid_lng CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+    if (!$this->db->field_exists('calendar_name', 'maulid_bookings')) {
+      $this->db->query('ALTER TABLE maulid_bookings ADD calendar_name VARCHAR(255) NULL AFTER booker_name');
+    }
+
+    $this->db->query("UPDATE maulid_bookings mb INNER JOIN login l ON l.IdUser = mb.user_id AND l.level = 'Wali'
+      SET mb.calendar_name = (SELECT GROUP_CONCAT(s.NamaLengkap ORDER BY s.NamaLengkap SEPARATOR ' / ')
+        FROM wali_siswa ws INNER JOIN siswa s ON s.IdSiswa = ws.IdSiswa WHERE ws.IdUser = mb.user_id)
+      WHERE mb.calendar_name IS NULL OR mb.calendar_name = ''");
+    $this->db->query("UPDATE maulid_bookings mb INNER JOIN musyrif m ON m.IdUser = mb.user_id
+      SET mb.calendar_name = m.NamaMusyrif WHERE mb.calendar_name IS NULL OR mb.calendar_name = ''");
   }
 
   public function getByYear($year, $include_cancelled = false)
