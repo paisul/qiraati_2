@@ -14,16 +14,6 @@
 
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
 
-  <?php if (!$is_admin) foreach (range(1, 30) as $day) if (empty($bookings[$day])) : ?>
-    <div class="m-card m-form-panel" id="bookDay<?= $day; ?>" hidden>
-      <div class="m-list-title">Booking <?= $day; ?> Rabiul Awal <?= (int) $year; ?> H</div>
-      <?= form_open('maulid/create'); ?>
-        <?php $form_day = $day; include APPPATH . 'views/maulid/form.php'; ?>
-        <button class="m-btn">Simpan Booking</button>
-      <?= form_close(); ?>
-    </div>
-  <?php endif; ?>
-
   <?php if ($is_admin) : ?>
     <div class="m-card">
       <div class="m-list-title">Riwayat termasuk pembatalan</div>

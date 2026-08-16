@@ -95,6 +95,38 @@ class Maulid extends CI_Controller
     $this->back($year, $message);
   }
 
+  public function book($day = null)
+  {
+    if ($this->session->userdata('level') !== 'Wali') {
+      $this->back(self::BOOKING_HIJRI_YEAR, 'Hanya akun Wali yang dapat membuat booking.');
+    }
+
+    $day = filter_var($day, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 30]]);
+    if ($day === false) {
+      $this->back(self::BOOKING_HIJRI_YEAR, 'Tanggal Rabiul Awal tidak valid.');
+    }
+
+    foreach ($this->Maulid_model->getByYear(self::BOOKING_HIJRI_YEAR) as $booking) {
+      if ((int) $booking['rabiul_awal_day'] === (int) $day) {
+        $this->back(self::BOOKING_HIJRI_YEAR, "Tanggal {$day} Rabiul Awal sudah dibooking oleh user lain. Silakan pilih tanggal yang masih tersedia.");
+      }
+    }
+
+    $wali = $this->getWali();
+    $data = [
+      'title' => 'Form Booking Maulid',
+      'user' => $wali,
+      'year' => self::BOOKING_HIJRI_YEAR,
+      'gregorian_year' => self::BOOKING_GREGORIAN_YEAR,
+      'form_day' => (int) $day,
+      'parent_name' => $this->parentName($wali),
+      'is_mobile' => tampilan_mobile(),
+      'isi' => 'maulid/book',
+    ];
+
+    $this->load->view(tampilan_mobile() ? 'templates/wrapper-wali-mobile' : 'templates/wrapper-wali', $data);
+  }
+
   public function cancel($id)
   {
     $this->requirePost();
