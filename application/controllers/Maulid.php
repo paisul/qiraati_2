@@ -87,7 +87,7 @@ class Maulid extends CI_Controller
       }
     }
 
-    if ($year !== self::BOOKING_HIJRI_YEAR || $day === false || (($lat === null || $lng === null) && $maps_url === '')) {
+    if ($year !== self::BOOKING_HIJRI_YEAR || $day === false || $this->input->post('location_confirmed') !== '1' || $lat === null || $lng === null || $maps_url === '') {
       $this->back($year, 'Tanggal dan lokasi Google Maps wajib diisi dengan benar.');
     }
     if ($maps_url !== '' && !filter_var($maps_url, FILTER_VALIDATE_URL)) {

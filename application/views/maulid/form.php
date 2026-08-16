@@ -7,7 +7,7 @@
 <div class="form-group"><label>Nama Santri</label><textarea class="form-control" rows="<?= max(1, count($student_names)); ?>" readonly><?= html_escape(implode("\n", $student_names)); ?></textarea></div>
 <div class="form-group"><label>Nama Wali</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
 <?php endif; ?>
-<input type="hidden" class="js-latitude" name="latitude"><input type="hidden" class="js-longitude" name="longitude">
+<input type="hidden" class="js-latitude" name="latitude"><input type="hidden" class="js-longitude" name="longitude"><input type="hidden" class="js-location-confirmed" name="location_confirmed" value="0">
 <input type="hidden" name="maps_url">
 <button type="button" class="maulid-location-button js-use-location">
   <span class="maulid-location-icon"><i class="fas fa-location-arrow"></i></span>
@@ -18,4 +18,5 @@
   <div class="maulid-map-canvas js-map-canvas" aria-label="Geser peta untuk menentukan titik lokasi"></div>
   <div class="maulid-map-center-pin" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
   <div class="maulid-map-confirm"><i class="fas fa-hand-pointer"></i> Geser peta dengan satu jari dan gunakan tombol +/− untuk memperbesar. Titik yang dipilih selalu berada tepat di tengah.</div>
+  <button type="button" class="maulid-confirm-location js-confirm-map-location"><i class="fas fa-check-circle"></i> Simpan Titik Lokasi</button>
 </div>
