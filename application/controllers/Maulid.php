@@ -24,7 +24,9 @@ class Maulid extends CI_Controller
     $user = $this->getLoginUser();
     $wali = (!$is_admin && !$is_musyrif) ? $this->getWali() : null;
     $musyrif = $is_musyrif ? $this->Musyrif_M->getDataMusyrif($this->session->userdata('username')) : null;
-    $rows = $this->Maulid_model->getByYear($year, $is_admin);
+    // Rekap hanya menampilkan booking yang masih aktif untuk semua level,
+    // termasuk Admin. Data pembatalan tetap tersimpan di database.
+    $rows = $this->Maulid_model->getByYear($year);
     $bookings = [];
     foreach ($rows as $row) {
       if ($row['status'] === 'booked') {
