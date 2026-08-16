@@ -6,7 +6,7 @@
   <?php $this->load->view('maulid/booking-popup'); ?>
 
   <div class="m-card">
-      <div class="m-list-title"><?= $is_admin ? 'Riwayat termasuk pembatalan' : 'Rekap Booking'; ?></div>
+      <div class="m-list-title"><?= $is_admin ? 'Rekap Booking Aktif' : 'Rekap Booking'; ?></div>
       <?php foreach ($rows as $r) : ?>
         <div class="m-list-item" style="display:block">
           <strong><?= (int) $r['rabiul_awal_day']; ?> Rabiul Awal - <?= html_escape($r['booker_name']); ?></strong>

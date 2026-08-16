@@ -4,7 +4,7 @@
   <div class="card"><div class="card-body">
   <?php $mobile_calendar = false; $this->load->view('maulid/calendar'); ?>
   <?php $this->load->view('maulid/booking-popup'); ?>
-  <hr><h5><?= $is_admin ? 'Riwayat/Rekap' : 'Rekap Booking'; ?> <?= (int)$year; ?> H</h5>
+  <hr><h5><?= $is_admin ? 'Rekap Booking Aktif' : 'Rekap Booking'; ?> <?= (int)$year; ?> H</h5>
   <div class="table-responsive"><table class="table table-striped"><thead><tr><th>Tanggal</th><th>Nama Ibu/Bapak</th><th>Lokasi</th><th>Maps</th><th>Status</th><?php if ($is_admin) : ?><th>Aksi</th><?php endif; ?></tr></thead><tbody>
   <?php foreach ($rows as $r) : ?><tr><td><?= (int)$r['rabiul_awal_day']; ?> Rabiul Awal</td><td><?= html_escape($r['booker_name']); ?></td><td><?= html_escape($r['location_name']); ?></td><td><?php if($r['maps_url']||($r['latitude'] !== null && $r['longitude'] !== null)):?><a target="_blank" rel="noopener noreferrer" href="<?= html_escape($r['latitude'] !== null && $r['longitude'] !== null?'https://www.google.com/maps/search/?api=1&query='.rawurlencode($r['latitude'].','.$r['longitude']):$r['maps_url']); ?>">Buka</a><?php endif;?></td><td><?= $r['status']==='booked'?'<span class="badge badge-success">Aktif</span>':'<span class="badge badge-secondary">Dibatalkan</span>'; ?></td><?php if ($is_admin) : ?><td><?php if($r['status']==='booked'): ?><button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editBooking<?= (int)$r['id']; ?>">Ubah</button> <?= form_open('maulid/cancel/'.$r['id'], ['class'=>'d-inline maulid-cancel-form']); ?><button type="submit" class="btn btn-sm btn-danger js-maulid-cancel">Batalkan</button><?= form_close(); ?><?php endif;?></td><?php endif; ?></tr><?php endforeach; ?>
   </tbody></table></div>
