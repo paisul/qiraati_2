@@ -15,14 +15,14 @@ $mobile_calendar = !empty($mobile_calendar);
         $b = $bookings[$day] ?? null;
         $masehi = $gregorian_dates[$day];
         $is_locked_day = in_array((int) $masehi['weekday'], [4, 6], true);
-        $can_book = !$b && !$is_admin && !$is_locked_day && !$has_active_booking;
+        $can_book = !$b && !$is_admin && !$is_locked_day;
         $maps_url_tampil = $b ? ($b['latitude'] !== null && $b['longitude'] !== null
           ? 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($b['latitude'] . ',' . $b['longitude'])
           : $b['maps_url']) : null;
       ?>
-        <div class="maulid-day <?= $b ? 'is-booked' : ($is_locked_day ? 'is-locked' : ($has_active_booking && !$is_admin ? 'is-disabled' : 'is-available')); ?>" role="gridcell">
+        <div class="maulid-day <?= $b ? 'is-booked' : ($is_locked_day ? 'is-locked' : 'is-available'); ?>" role="gridcell">
           <?php if ($can_book) : ?>
-            <button type="button" class="maulid-day-book js-open-maulid-booking" data-day="<?= $day; ?>" aria-label="Booking tanggal <?= $day; ?> Rabiul Awal">
+            <button type="button" class="maulid-day-book js-open-maulid-booking" data-day="<?= $day; ?>"<?= $has_active_booking ? ' data-already-booked-day="' . (int) $active_booking['rabiul_awal_day'] . '"' : ''; ?> aria-label="Booking tanggal <?= $day; ?> Rabiul Awal">
               <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
               <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
               <span class="maulid-status available">Tersedia</span>
@@ -43,8 +43,6 @@ $mobile_calendar = !empty($mobile_calendar);
               <?php elseif ($is_locked_day) : ?>
                 <span class="maulid-status locked">Dikunci</span>
                 <span class="maulid-tap-hint">Kamis dan Sabtu</span>
-              <?php elseif ($has_active_booking && !$is_admin) : ?>
-                <span class="maulid-status limited">Sudah booking</span>
               <?php else : ?><span class="maulid-status available">Tersedia</span><?php endif; ?>
             </div>
           <?php endif; ?>
