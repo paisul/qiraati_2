@@ -56,14 +56,15 @@
       if (mapCanvas && window.L) {
         bookingMap = window.L.map(mapCanvas, {
           center: [latitude, longitude],
-          zoom: 17,
+          zoom: 20,
           dragging: true,
           touchZoom: true,
           scrollWheelZoom: false,
           doubleClickZoom: false
         });
         window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-          maxZoom: 19,
+          maxNativeZoom: 19,
+          maxZoom: 22,
           attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
         }).addTo(bookingMap);
         bookingMap.on('moveend', function () {

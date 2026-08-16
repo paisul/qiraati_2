@@ -7,5 +7,5 @@
 <div class="maulid-map-preview js-map-preview" hidden>
   <div class="maulid-map-canvas js-map-canvas" aria-label="Geser peta untuk menentukan titik lokasi"></div>
   <div class="maulid-map-center-pin" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
-  <div class="maulid-map-confirm"><i class="fas fa-hand-pointer"></i> Geser peta dengan satu jari. Titik yang dipilih selalu berada tepat di tengah.</div>
+  <div class="maulid-map-confirm"><i class="fas fa-hand-pointer"></i> Geser peta dengan satu jari dan gunakan tombol +/− untuk memperbesar. Titik yang dipilih selalu berada tepat di tengah.</div>
 </div>
