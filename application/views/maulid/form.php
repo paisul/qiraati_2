@@ -2,8 +2,12 @@
 <div class="form-group"><label>Nama Santri</label><textarea class="form-control" rows="<?= max(1, count($student_names)); ?>" readonly><?= html_escape(implode("\n", $student_names)); ?></textarea></div>
 <div class="form-group"><label>Nama Wali</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
 <input type="hidden" class="js-latitude" name="latitude"><input type="hidden" class="js-longitude" name="longitude">
-<div class="form-group"><label>Lokasi Google Maps *</label><input type="url" class="form-control" name="maps_url" placeholder="Tempel link Google Maps di sini"><small class="form-text text-muted js-location-status">Tempel link Google Maps atau gunakan lokasi perangkat.</small></div>
-<button type="button" class="btn btn-outline-primary btn-block js-use-location"><i class="fas fa-crosshairs"></i> Gunakan Lokasi Saya</button>
+<input type="hidden" name="maps_url">
+<button type="button" class="maulid-location-button js-use-location">
+  <span class="maulid-location-icon"><i class="fas fa-location-arrow"></i></span>
+  <span class="maulid-location-copy"><strong>Gunakan Lokasi Saya</strong><small class="js-location-status">Tekan untuk mengambil titik lokasi acara</small></span>
+  <span class="maulid-location-action"><i class="fas fa-chevron-right"></i></span>
+</button>
 <div class="maulid-map-preview js-map-preview" hidden>
   <div class="maulid-map-canvas js-map-canvas" aria-label="Geser peta untuk menentukan titik lokasi"></div>
   <div class="maulid-map-center-pin" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>

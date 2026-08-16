@@ -10,8 +10,12 @@
       var dayInput = bookingPopup.querySelector('.js-maulid-booking-day');
       var popupTitle = bookingPopup.querySelector('.js-maulid-booking-title');
       var existingMapPreview = bookingPopup.querySelector('.js-map-preview');
+      var locationButton = bookingPopup.querySelector('.js-use-location');
+      var locationStatus = bookingPopup.querySelector('.js-location-status');
 
       if (bookingForm) bookingForm.reset();
+      if (locationButton) locationButton.disabled = false;
+      if (locationStatus) locationStatus.textContent = 'Tekan untuk mengambil titik lokasi acara';
       if (existingMapPreview) existingMapPreview.hidden = true;
       if (bookingMap) {
         bookingMap.remove();
