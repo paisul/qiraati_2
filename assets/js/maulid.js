@@ -1,19 +1,28 @@
 (function () {
   document.addEventListener('click', function (event) {
-    var calendarButton = event.target.closest('.maulid-day-book[data-toggle-target]');
-    if (calendarButton) {
-      var target = document.querySelector(calendarButton.getAttribute('data-toggle-target'));
-      if (target) {
-        document.querySelectorAll('.m-form-panel[id^="bookDay"]').forEach(function (panel) {
-          if (panel !== target) panel.hidden = true;
-        });
-        // Jamin panel tetap terbuka walau handler generik mobile ikut memproses tombol yang sama.
-        target.hidden = false;
-        calendarButton.setAttribute('aria-expanded', 'true');
-      }
-      window.setTimeout(function () {
-        if (target && !target.hidden) target.scrollIntoView({behavior: 'smooth', block: 'start'});
-      }, 80);
+    var calendarButton = event.target.closest('.js-open-maulid-booking');
+    var bookingPopup = document.getElementById('maulidBookingPopup');
+    if (calendarButton && bookingPopup) {
+      var selectedDay = calendarButton.getAttribute('data-day');
+      var bookingForm = bookingPopup.querySelector('form');
+      var dayInput = bookingPopup.querySelector('.js-maulid-booking-day');
+      var popupTitle = bookingPopup.querySelector('.js-maulid-booking-title');
+
+      if (bookingForm) bookingForm.reset();
+      if (dayInput) dayInput.value = selectedDay;
+      if (popupTitle) popupTitle.textContent = 'Booking ' + selectedDay + ' Rabiul Awal';
+
+      bookingPopup.hidden = false;
+      document.body.classList.add('maulid-popup-open');
+      var closeButton = bookingPopup.querySelector('.js-close-maulid-booking');
+      if (closeButton) closeButton.focus();
+      return;
+    }
+
+    if (event.target.closest('.js-close-maulid-booking') && bookingPopup) {
+      bookingPopup.hidden = true;
+      document.body.classList.remove('maulid-popup-open');
+      return;
     }
 
     var button = event.target.closest('.js-use-location');
@@ -33,4 +42,21 @@
       button.disabled = false;
     }, {enableHighAccuracy: true, timeout: 15000, maximumAge: 60000});
   });
+
+  var bookingPopup = document.getElementById('maulidBookingPopup');
+  if (bookingPopup) {
+    bookingPopup.addEventListener('click', function (event) {
+      if (event.target === bookingPopup) {
+        bookingPopup.hidden = true;
+        document.body.classList.remove('maulid-popup-open');
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !bookingPopup.hidden) {
+        bookingPopup.hidden = true;
+        document.body.classList.remove('maulid-popup-open');
+      }
+    });
+  }
 })();

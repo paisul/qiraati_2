@@ -13,6 +13,7 @@
   <p class="m-list-sub" style="margin:0 4px 8px;">Biru tua: Hijriah. Jingga: Masehi. Konversi dapat berbeda satu hari dari penetapan resmi.</p>
 
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
+  <?php if (!$is_admin) $this->load->view('maulid/booking-popup'); ?>
 
   <?php if ($is_admin) : ?>
     <div class="m-card">

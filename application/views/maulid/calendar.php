@@ -20,12 +20,12 @@ $mobile_calendar = !empty($mobile_calendar);
       ?>
         <div class="maulid-day <?= $b ? 'is-booked' : 'is-available'; ?>" role="gridcell">
           <?php if (!$b && !$is_admin) : ?>
-            <a class="maulid-day-book" href="<?= base_url('maulid/book/' . $day); ?>" aria-label="Booking tanggal <?= $day; ?> Rabiul Awal">
+            <button type="button" class="maulid-day-book js-open-maulid-booking" data-day="<?= $day; ?>" aria-label="Booking tanggal <?= $day; ?> Rabiul Awal">
               <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
               <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
               <span class="maulid-status available">Tersedia</span>
               <span class="maulid-tap-hint">Tekan untuk booking</span>
-            </a>
+            </button>
           <?php else : ?>
             <div class="maulid-day-content">
               <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
