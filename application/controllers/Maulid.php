@@ -50,7 +50,7 @@ class Maulid extends CI_Controller
       'current_user_id' => (int) $user['IdUser'],
       'parent_name' => $is_admin ? ($user['username'] ?? 'Admin') : ($is_musyrif ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'student_names' => ($is_admin || $is_musyrif) ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
-      'admin_students' => $is_admin ? $this->db->select('IdSiswa, NamaLengkap')->order_by('NamaLengkap', 'asc')->get('siswa')->result_array() : [],
+      'admin_students' => $is_admin ? $this->adminAvailableStudents($year) : [],
       'pesan' => $this->input->get('pesan') ?: $this->session->flashdata('pesan'),
       'isi' => tampilan_mobile() ? 'maulid/mobile-index' : 'maulid/index',
     ];
@@ -81,9 +81,9 @@ class Maulid extends CI_Controller
     $admin_student = null;
     if ($level === 'Admin') {
       $admin_student_id = filter_var($this->input->post('admin_student_id'), FILTER_VALIDATE_INT);
-      $admin_student = $admin_student_id ? $this->db->select('IdSiswa, NamaLengkap')->get_where('siswa', ['IdSiswa' => $admin_student_id])->row_array() : null;
+      $admin_student = $admin_student_id ? $this->adminStudentForBooking($admin_student_id, $year) : null;
       if (!$admin_student) {
-        $this->back($year, 'Nama Santri wajib dipilih.');
+        $this->back($year, 'Nama Santri tidak tersedia atau akun Walinya sudah memiliki booking.');
       }
     }
 
@@ -100,8 +100,8 @@ class Maulid extends CI_Controller
 
     $replace_existing = $this->input->post('replace_existing') === '1';
     $result = $this->Maulid_model->createBooking([
-      'user_id' => (int) $user['IdUser'],
-      'booker_name' => $level === 'Admin' ? $admin_student['NamaLengkap'] : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali)),
+      'user_id' => $level === 'Admin' ? (int) $admin_student['IdUser'] : (int) $user['IdUser'],
+      'booker_name' => $level === 'Admin' ? $this->parentName($admin_student) : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'hijri_year' => $year,
       'rabiul_awal_day' => $day,
       'location_name' => 'Lokasi Google Maps',
@@ -113,7 +113,7 @@ class Maulid extends CI_Controller
       'active_slot' => 1,
       'created_at' => date('Y-m-d H:i:s'),
       'updated_at' => date('Y-m-d H:i:s'),
-    ], $replace_existing, $level === 'Admin');
+    ], $replace_existing, false);
 
     $message = $result['ok']
       ? ($replace_existing ? 'Hari booking Maulid berhasil diganti.' : 'Booking Maulid berhasil disimpan.')
@@ -193,6 +193,30 @@ class Maulid extends CI_Controller
     $name = trim((string) ($musyrif['NamaMusyrif'] ?? $musyrif['username'] ?? ''));
     if ($name === '') show_error('Nama Musyrif belum tersedia.', 422);
     return $name;
+  }
+
+  private function adminAvailableStudents($year)
+  {
+    return $this->db->query(
+      'SELECT s.IdSiswa, s.NamaLengkap FROM siswa s '
+      . 'INNER JOIN wali_siswa ws ON ws.IdSiswa = s.IdSiswa '
+      . 'INNER JOIN login l ON l.IdUser = ws.IdUser AND l.level = ? '
+      . 'LEFT JOIN maulid_bookings mb ON mb.user_id = l.IdUser AND mb.hijri_year = ? AND mb.status = ? '
+      . 'WHERE mb.id IS NULL GROUP BY s.IdSiswa, s.NamaLengkap ORDER BY s.NamaLengkap ASC',
+      ['Wali', (int) $year, 'booked']
+    )->result_array();
+  }
+
+  private function adminStudentForBooking($student_id, $year)
+  {
+    return $this->db->query(
+      'SELECT s.IdSiswa, s.NamaLengkap, s.NamaAyah, s.NamaIbu, l.IdUser FROM siswa s '
+      . 'INNER JOIN wali_siswa ws ON ws.IdSiswa = s.IdSiswa '
+      . 'INNER JOIN login l ON l.IdUser = ws.IdUser AND l.level = ? '
+      . 'LEFT JOIN maulid_bookings mb ON mb.user_id = l.IdUser AND mb.hijri_year = ? AND mb.status = ? '
+      . 'WHERE s.IdSiswa = ? AND mb.id IS NULL ORDER BY l.IdUser ASC LIMIT 1',
+      ['Wali', (int) $year, 'booked', (int) $student_id]
+    )->row_array();
   }
 
   private function coordinate($value, $min, $max)
