@@ -18,6 +18,7 @@
   function setLocationPending(form, status, message) {
     form.querySelector('.js-location-confirmed').value = '0';
     form.querySelector('.js-save-maulid-booking').disabled = true;
+    form.querySelector('.js-confirm-map-location').hidden = false;
     status.textContent = message || 'Geser peta, lalu tekan Simpan Titik Lokasi.';
   }
 
@@ -107,6 +108,7 @@
       var confirmForm = confirmLocation.closest('form');
       confirmForm.querySelector('.js-location-confirmed').value = '1';
       confirmForm.querySelector('.js-save-maulid-booking').disabled = false;
+      confirmLocation.hidden = true;
       confirmForm.querySelector('.js-location-status').textContent = 'Titik lokasi sudah disimpan. Booking siap disimpan.';
       return;
     }
