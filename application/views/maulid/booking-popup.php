@@ -15,7 +15,7 @@
       </div>
       <div class="maulid-booking-footer">
         <button type="button" class="maulid-popup-secondary js-close-maulid-booking">Batal</button>
-        <button type="submit" class="maulid-popup-primary"><i class="fas fa-save"></i> Simpan Booking</button>
+        <button type="submit" class="maulid-popup-primary js-save-maulid-booking" disabled><i class="fas fa-save"></i> Simpan Booking</button>
       </div>
     <?= form_close(); ?>
   </div>
