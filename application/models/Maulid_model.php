@@ -60,13 +60,13 @@ class Maulid_model extends CI_Model
       ->where('status', 'booked')->get('maulid_bookings')->row_array();
   }
 
-  public function createBooking($data, $replace_existing = false)
+  public function createBooking($data, $replace_existing = false, $allow_multiple = false)
   {
     $this->db->trans_begin();
     // Kunci baris akun agar dua permintaan bersamaan dari akun yang sama tidak dapat
     // melewati aturan satu booking aktif.
     $this->db->query('SELECT IdUser FROM login WHERE IdUser = ? FOR UPDATE', [(int) $data['user_id']]);
-    $existing = $this->db->query(
+    $existing = $allow_multiple ? null : $this->db->query(
       'SELECT id FROM maulid_bookings WHERE user_id = ? AND hijri_year = ? AND status = ? LIMIT 1 FOR UPDATE',
       [(int) $data['user_id'], (int) $data['hijri_year'], 'booked']
     )->row_array();

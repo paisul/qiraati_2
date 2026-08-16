@@ -1,5 +1,7 @@
 <input type="hidden" name="hijri_year" value="<?= (int)$year; ?>"><input type="hidden" class="js-maulid-booking-day" name="rabiul_awal_day" value="<?= (int)$form_day; ?>"><input type="hidden" class="js-maulid-replace-booking" name="replace_existing" value="0">
-<?php if (!empty($is_musyrif)) : ?>
+<?php if (!empty($is_admin)) : ?>
+<div class="form-group"><label>Nama Admin</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
+<?php elseif (!empty($is_musyrif)) : ?>
 <div class="form-group"><label>Nama Musyrif</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
 <?php else : ?>
 <div class="form-group"><label>Nama Santri</label><textarea class="form-control" rows="<?= max(1, count($student_names)); ?>" readonly><?= html_escape(implode("\n", $student_names)); ?></textarea></div>

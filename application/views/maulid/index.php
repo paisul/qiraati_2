@@ -3,7 +3,7 @@
   <div class="flash-data" data-flashdata="<?= html_escape($pesan ?? ''); ?>" data-title="<?= html_escape($title); ?>"></div>
   <div class="card"><div class="card-body">
   <?php $mobile_calendar = false; $this->load->view('maulid/calendar'); ?>
-  <?php if (!$is_admin) $this->load->view('maulid/booking-popup'); ?>
+  <?php $this->load->view('maulid/booking-popup'); ?>
   <?php if ($is_admin) : ?><hr><h5>Riwayat/Rekap <?= (int)$year; ?> H</h5><div class="table-responsive"><table class="table table-striped"><thead><tr><th>Tanggal</th><th>Nama Ibu/Bapak</th><th>Lokasi</th><th>Maps</th><th>Status</th><th>Aksi</th></tr></thead><tbody><?php foreach($rows as $r): ?><tr><td><?= (int)$r['rabiul_awal_day']; ?> Rabiul Awal</td><td><?= html_escape($r['booker_name']); ?></td><td><?= html_escape($r['location_name']); ?></td><td><?php if($r['maps_url']||($r['latitude'] !== null && $r['longitude'] !== null)):?><a target="_blank" rel="noopener noreferrer" href="<?= html_escape($r['latitude'] !== null && $r['longitude'] !== null?'https://www.google.com/maps/search/?api=1&query='.rawurlencode($r['latitude'].','.$r['longitude']):$r['maps_url']); ?>">Buka</a><?php endif;?></td><td><?= $r['status']==='booked'?'<span class="badge badge-success">Aktif</span>':'<span class="badge badge-secondary">Dibatalkan</span>'; ?></td><td><?php if($r['status']==='booked'): ?><button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editBooking<?= (int)$r['id']; ?>">Ubah</button><?php endif;?></td></tr><?php endforeach;?></tbody></table></div><?php endif; ?>
   </div></div>
 </div></div></div>
