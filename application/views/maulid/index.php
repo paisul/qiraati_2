@@ -2,7 +2,7 @@
 <div class="content-wrapper"><div class="content pt-3"><div class="container-fluid">
   <div class="flash-data" data-flashdata="<?= html_escape($pesan ?? ''); ?>" data-title="<?= html_escape($title); ?>"></div>
   <div class="card"><div class="card-header bg-success d-flex align-items-center"><h4 class="m-0 flex-grow-1"><?= html_escape($title); ?></h4>
-    <form method="get" class="form-inline"><label class="mr-2">Tahun</label><input type="number" name="tahun" min="1300" max="1700" value="<?= (int) $year; ?>" class="form-control form-control-sm mr-2" required><button class="btn btn-light btn-sm">Tampilkan</button></form>
+    <span class="badge badge-light p-2"><?= (int) $gregorian_year; ?> M / <?= (int) $year; ?> H</span>
   </div><div class="card-body">
   <?php if (!$is_admin) : ?><div class="alert alert-info">Nama booking: <strong><?= html_escape($parent_name); ?></strong>. Pilih salah satu tanggal yang tersedia.</div><?php endif; ?>
   <p class="text-muted small">Biru tua = tanggal Hijriah, jingga = tanggal Masehi. Tanggal Masehi memakai kalender Hijriah sipil dan dapat berbeda satu hari dari penetapan resmi.</p>

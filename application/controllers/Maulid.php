@@ -3,6 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Maulid extends CI_Controller
 {
+  const BOOKING_GREGORIAN_YEAR = 2026;
+  const BOOKING_HIJRI_YEAR = 1448;
+
   public function __construct()
   {
     parent::__construct();
@@ -13,7 +16,7 @@ class Maulid extends CI_Controller
 
   public function index()
   {
-    $year = $this->validYear($this->input->get('tahun')) ?: $this->defaultHijriYear();
+    $year = self::BOOKING_HIJRI_YEAR;
     $is_admin = $this->session->userdata('level') === 'Admin';
     $user = $this->getLoginUser();
     $rows = $this->Maulid_model->getByYear($year, $is_admin);
@@ -29,6 +32,7 @@ class Maulid extends CI_Controller
       'title' => $is_admin ? 'Rekap Booking Maulid' : 'Booking Maulid',
       'user' => $is_admin ? $user : $this->getWali(),
       'year' => $year,
+      'gregorian_year' => self::BOOKING_GREGORIAN_YEAR,
       'bookings' => $bookings,
       'gregorian_dates' => $gregorian_dates,
       'calendar_start_offset' => $gregorian_dates[1]['weekday'],
@@ -54,7 +58,7 @@ class Maulid extends CI_Controller
 
     $wali = $this->getWali();
     $user = $this->getLoginUser();
-    $year = $this->validYear($this->input->post('hijri_year'));
+    $year = (int) $this->input->post('hijri_year');
     $day = filter_var($this->input->post('rabiul_awal_day'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 30]]);
     $location = trim((string) $this->input->post('location_name', true));
     $lat = $this->coordinate($this->input->post('latitude'), -90, 90);
@@ -62,7 +66,7 @@ class Maulid extends CI_Controller
     $maps_url = trim((string) $this->input->post('maps_url', true));
     $notes = trim((string) $this->input->post('notes', true));
 
-    if (!$year || $day === false || $location === '' || (($lat === null || $lng === null) && $maps_url === '')) {
+    if ($year !== self::BOOKING_HIJRI_YEAR || $day === false || $location === '' || (($lat === null || $lng === null) && $maps_url === '')) {
       $this->back($year, 'Tanggal, nama lokasi, dan titik GPS atau link Google Maps wajib diisi dengan benar.');
     }
     if ($maps_url !== '' && !filter_var($maps_url, FILTER_VALIDATE_URL)) {
@@ -166,15 +170,9 @@ class Maulid extends CI_Controller
     return ($number >= $min && $number <= $max) ? $number : null;
   }
 
-  private function validYear($value)
-  {
-    $year = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1300, 'max_range' => 1700]]);
-    return $year === false ? null : (int) $year;
-  }
-
   private function defaultHijriYear()
   {
-    return (int) floor((date('Y') - 622) * 33 / 32);
+    return self::BOOKING_HIJRI_YEAR;
   }
 
   /**
@@ -232,7 +230,7 @@ class Maulid extends CI_Controller
 
   private function back($year, $message)
   {
-    redirect('maulid?tahun=' . (int) $year . '&pesan=' . rawurlencode($message));
+    redirect('maulid?pesan=' . rawurlencode($message));
     exit;
   }
 }

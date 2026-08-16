@@ -3,6 +3,14 @@
     var calendarButton = event.target.closest('.maulid-day-book[data-toggle-target]');
     if (calendarButton) {
       var target = document.querySelector(calendarButton.getAttribute('data-toggle-target'));
+      if (target) {
+        document.querySelectorAll('.m-form-panel[id^="bookDay"]').forEach(function (panel) {
+          if (panel !== target) panel.hidden = true;
+        });
+        // Jamin panel tetap terbuka walau handler generik mobile ikut memproses tombol yang sama.
+        target.hidden = false;
+        calendarButton.setAttribute('aria-expanded', 'true');
+      }
       window.setTimeout(function () {
         if (target && !target.hidden) target.scrollIntoView({behavior: 'smooth', block: 'start'});
       }, 80);

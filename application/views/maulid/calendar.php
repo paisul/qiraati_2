@@ -3,7 +3,7 @@ $nama_hari = ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 $mobile_calendar = !empty($mobile_calendar);
 ?>
 <div class="maulid-calendar-scroll">
-  <div class="maulid-calendar" role="grid" aria-label="Kalender Rabiul Awal <?= (int) $year; ?> Hijriah">
+  <div class="maulid-calendar" role="grid" aria-label="Kalender Rabiul Awal <?= (int) $year; ?> Hijriah tahun <?= (int) $gregorian_year; ?> Masehi">
     <div class="maulid-week-header" role="row">
       <?php foreach ($nama_hari as $hari) : ?>
         <div class="maulid-week-day" role="columnheader"><?= html_escape($hari); ?></div>
