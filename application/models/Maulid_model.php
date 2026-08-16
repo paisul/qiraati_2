@@ -54,9 +54,26 @@ class Maulid_model extends CI_Model
     return $this->db->get_where('maulid_bookings', ['id' => (int) $id])->row_array();
   }
 
+  public function getActiveByUser($user_id, $year)
+  {
+    return $this->db->where('user_id', (int) $user_id)->where('hijri_year', (int) $year)
+      ->where('status', 'booked')->get('maulid_bookings')->row_array();
+  }
+
   public function createBooking($data)
   {
     $this->db->trans_begin();
+    // Kunci baris akun agar dua permintaan bersamaan dari akun yang sama tidak dapat
+    // melewati aturan satu booking aktif.
+    $this->db->query('SELECT IdUser FROM login WHERE IdUser = ? FOR UPDATE', [(int) $data['user_id']]);
+    $existing = $this->db->query(
+      'SELECT id FROM maulid_bookings WHERE user_id = ? AND hijri_year = ? AND status = ? LIMIT 1 FOR UPDATE',
+      [(int) $data['user_id'], (int) $data['hijri_year'], 'booked']
+    )->row_array();
+    if ($existing) {
+      $this->db->trans_rollback();
+      return ['ok' => false, 'duplicate' => false, 'already_booked' => true];
+    }
     // Duplicate key adalah hasil bisnis yang wajar saat dua wali booking bersamaan; jangan biarkan
     // db_debug CI menampilkan halaman error sebelum controller bisa memberi pesan yang ramah.
     $db_debug = $this->db->db_debug;
@@ -67,11 +84,11 @@ class Maulid_model extends CI_Model
 
     if (!$ok || $this->db->trans_status() === false) {
       $this->db->trans_rollback();
-      return ['ok' => false, 'duplicate' => isset($db_error['code']) && (int) $db_error['code'] === 1062];
+      return ['ok' => false, 'duplicate' => isset($db_error['code']) && (int) $db_error['code'] === 1062, 'already_booked' => false];
     }
 
     $this->db->trans_commit();
-    return ['ok' => true, 'duplicate' => false];
+    return ['ok' => true, 'duplicate' => false, 'already_booked' => false];
   }
 
   public function cancel($id, $user_id = null)
