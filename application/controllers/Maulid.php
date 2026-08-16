@@ -48,7 +48,7 @@ class Maulid extends CI_Controller
       'active_booking' => $active_booking,
       'has_active_booking' => (bool) $active_booking,
       'current_user_id' => (int) $user['IdUser'],
-      'parent_name' => $is_admin ? '' : ($is_musyrif ? $this->musyrifName($musyrif) : $this->parentName($wali)),
+      'parent_name' => $is_admin ? ($user['username'] ?? 'Admin') : ($is_musyrif ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'student_names' => ($is_admin || $is_musyrif) ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
       'pesan' => $this->input->get('pesan') ?: $this->session->flashdata('pesan'),
       'isi' => tampilan_mobile() ? 'maulid/mobile-index' : 'maulid/index',
@@ -65,8 +65,8 @@ class Maulid extends CI_Controller
   {
     $this->requirePost();
     $level = $this->session->userdata('level');
-    if (!in_array($level, ['Wali', 'Musyrif'], true)) {
-      show_error('Hanya akun Wali dan Musyrif yang dapat membuat booking.', 403);
+    if (!in_array($level, ['Admin', 'Wali', 'Musyrif'], true)) {
+      show_error('Akun ini tidak dapat membuat booking.', 403);
     }
 
     $wali = $level === 'Wali' ? $this->getWali() : null;
@@ -92,7 +92,7 @@ class Maulid extends CI_Controller
     $replace_existing = $this->input->post('replace_existing') === '1';
     $result = $this->Maulid_model->createBooking([
       'user_id' => (int) $user['IdUser'],
-      'booker_name' => $level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali),
+      'booker_name' => $level === 'Admin' ? ($user['username'] ?? 'Admin') : ($level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali)),
       'hijri_year' => $year,
       'rabiul_awal_day' => $day,
       'location_name' => 'Lokasi Google Maps',
@@ -104,7 +104,7 @@ class Maulid extends CI_Controller
       'active_slot' => 1,
       'created_at' => date('Y-m-d H:i:s'),
       'updated_at' => date('Y-m-d H:i:s'),
-    ], $replace_existing);
+    ], $replace_existing, $level === 'Admin');
 
     $message = $result['ok']
       ? ($replace_existing ? 'Hari booking Maulid berhasil diganti.' : 'Booking Maulid berhasil disimpan.')

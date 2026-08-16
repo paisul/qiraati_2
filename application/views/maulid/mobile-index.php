@@ -3,7 +3,7 @@
   <div class="flash-data" data-flashdata="<?= html_escape($pesan ?? ''); ?>" data-title="<?= html_escape($title); ?>"></div>
 
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
-  <?php if (!$is_admin) $this->load->view('maulid/booking-popup'); ?>
+  <?php $this->load->view('maulid/booking-popup'); ?>
 
   <?php if ($is_admin) : ?>
     <div class="m-card">
