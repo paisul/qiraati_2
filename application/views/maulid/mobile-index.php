@@ -14,6 +14,9 @@
           <div class="m-list-sub"><?= html_escape($r['location_name']); ?> - <?= $r['status'] === 'booked' ? 'Aktif' : 'Dibatalkan'; ?></div>
           <?php if ($r['status'] === 'booked') : ?>
             <button type="button" class="m-btn mt-2" data-toggle-target="#editBooking<?= (int) $r['id']; ?>">Ubah</button>
+            <?= form_open('maulid/cancel/' . $r['id'], ['class' => 'maulid-cancel-form mt-2']); ?>
+              <button type="submit" class="m-btn m-btn-danger js-maulid-cancel">Batalkan Booking</button>
+            <?= form_close(); ?>
             <div class="m-form-panel" id="editBooking<?= (int) $r['id']; ?>" hidden>
               <?= form_open('maulid/update/' . $r['id']); ?>
                 <div class="m-field"><label>Nama/Lokasi</label><input name="location_name" value="<?= html_escape($r['location_name']); ?>" required></div>
