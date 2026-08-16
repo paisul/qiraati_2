@@ -56,7 +56,7 @@
       if (mapCanvas && window.L) {
         bookingMap = window.L.map(mapCanvas, {
           center: [latitude, longitude],
-          zoom: 20,
+          zoom: 17,
           dragging: true,
           touchZoom: true,
           scrollWheelZoom: false,
