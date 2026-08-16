@@ -9,7 +9,7 @@
 .maulid-day.is-booked { background:#f4f6f7; }
 .maulid-day.is-empty { background:#eef2f4; }
 .maulid-day-book,.maulid-day-content { width:100%; height:100%; min-height:150px; padding:10px; display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left; }
-.maulid-day-book { border:0; background:#f1fff6; color:inherit; cursor:pointer; }
+.maulid-day-book { border:0; background:#f1fff6; color:inherit; cursor:pointer; text-decoration:none; }
 .maulid-day-book:hover,.maulid-day-book:focus { background:#dff7e8; outline:3px solid #28a745; outline-offset:-3px; }
 .maulid-day-number { display:flex; align-items:center; justify-content:center; gap:2px; width:38px; height:32px; border-radius:16px; background:#172a3a; color:#fff; font-size:16px; font-weight:700; }
 .maulid-day-number small { font-size:9px; color:#bce9ff; }
@@ -23,6 +23,12 @@
 .maulid-map-link { font-size:12px; font-weight:600; }
 .maulid-cancel-form { margin-top:auto; }
 .maulid-cancel { border:0; border-radius:5px; padding:4px 7px; background:#dc3545; color:#fff; font-size:11px; }
+.m-content .form-group { margin-bottom:14px; }
+.m-content .form-group label { display:block; margin-bottom:6px; color:var(--heading); font-size:13px; font-weight:600; }
+.m-content .form-control { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--card-bg); color:var(--text); font-size:14px; }
+.m-content .form-row { display:flex; gap:10px; }
+.m-content .form-row .col { flex:1; }
+.m-content .form-text { display:block; margin-top:5px; color:var(--muted); font-size:11px; }
 @media (max-width:767.98px) {
   .maulid-calendar-scroll { max-height:62vh; border-radius:9px; }
   .maulid-calendar { min-width:630px; }
