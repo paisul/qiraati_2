@@ -7,8 +7,12 @@
       var bookingForm = bookingPopup.querySelector('form');
       var dayInput = bookingPopup.querySelector('.js-maulid-booking-day');
       var popupTitle = bookingPopup.querySelector('.js-maulid-booking-title');
+      var existingMapPreview = bookingPopup.querySelector('.js-map-preview');
+      var existingMapFrame = bookingPopup.querySelector('.js-map-frame');
 
       if (bookingForm) bookingForm.reset();
+      if (existingMapPreview) existingMapPreview.hidden = true;
+      if (existingMapFrame) existingMapFrame.removeAttribute('src');
       if (dayInput) dayInput.value = selectedDay;
       if (popupTitle) popupTitle.textContent = 'Booking ' + selectedDay + ' Rabiul Awal';
 
@@ -42,6 +46,10 @@
       form.querySelector('.js-latitude').value = latitude;
       form.querySelector('.js-longitude').value = longitude;
       form.querySelector('[name="maps_url"]').value = 'https://www.google.com/maps?q=' + latitude + ',' + longitude;
+      var mapPreview = form.querySelector('.js-map-preview');
+      var mapFrame = form.querySelector('.js-map-frame');
+      if (mapFrame) mapFrame.src = 'https://maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=17&output=embed';
+      if (mapPreview) mapPreview.hidden = false;
       status.textContent = 'Lokasi Google Maps berhasil diambil (akurasi sekitar ' + Math.round(position.coords.accuracy) + ' meter).';
       button.disabled = false;
     }, function () {
