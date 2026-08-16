@@ -67,6 +67,7 @@
 .maulid-map-center-pin { position:absolute; z-index:500; top:135px; left:50%; transform:translate(-50%,-100%); color:#dc3545; font-size:38px; line-height:1; pointer-events:none; filter:drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
 .maulid-map-confirm { padding:10px 12px; color:#24563b; font-size:13px; font-weight:600; }
 .maulid-confirm-location { display:block; width:calc(100% - 20px); margin:0 10px 10px; border:0; border-radius:9px; padding:11px 14px; background:#198754; color:#fff; font-weight:700; cursor:pointer; }
+.maulid-confirm-location[hidden] { display:none; }
 .maulid-popup-primary:disabled { cursor:not-allowed; opacity:.5; }
 body.maulid-popup-open { overflow:hidden; }
 .m-content .m-btn-danger { background:#dc3545; color:#fff; }
