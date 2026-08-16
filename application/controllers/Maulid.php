@@ -19,6 +19,7 @@ class Maulid extends CI_Controller
     $year = self::BOOKING_HIJRI_YEAR;
     $is_admin = $this->session->userdata('level') === 'Admin';
     $user = $this->getLoginUser();
+    $wali = $is_admin ? null : $this->getWali();
     $rows = $this->Maulid_model->getByYear($year, $is_admin);
     $bookings = [];
     foreach ($rows as $row) {
@@ -30,7 +31,7 @@ class Maulid extends CI_Controller
 
     $data = [
       'title' => $is_admin ? 'Rekap Booking Maulid' : 'Booking Maulid',
-      'user' => $is_admin ? $user : $this->getWali(),
+      'user' => $is_admin ? $user : $wali,
       'year' => $year,
       'gregorian_year' => self::BOOKING_GREGORIAN_YEAR,
       'bookings' => $bookings,
@@ -39,7 +40,8 @@ class Maulid extends CI_Controller
       'rows' => $rows,
       'is_admin' => $is_admin,
       'current_user_id' => (int) $user['IdUser'],
-      'parent_name' => $is_admin ? '' : $this->parentName($this->getWali()),
+      'parent_name' => $is_admin ? '' : $this->parentName($wali),
+      'student_names' => $is_admin ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
       'pesan' => $this->input->get('pesan') ?: $this->session->flashdata('pesan'),
       'isi' => tampilan_mobile() ? 'maulid/mobile-index' : 'maulid/index',
     ];
@@ -60,14 +62,12 @@ class Maulid extends CI_Controller
     $user = $this->getLoginUser();
     $year = (int) $this->input->post('hijri_year');
     $day = filter_var($this->input->post('rabiul_awal_day'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 30]]);
-    $location = trim((string) $this->input->post('location_name', true));
     $lat = $this->coordinate($this->input->post('latitude'), -90, 90);
     $lng = $this->coordinate($this->input->post('longitude'), -180, 180);
     $maps_url = trim((string) $this->input->post('maps_url', true));
-    $notes = trim((string) $this->input->post('notes', true));
 
-    if ($year !== self::BOOKING_HIJRI_YEAR || $day === false || $location === '' || (($lat === null || $lng === null) && $maps_url === '')) {
-      $this->back($year, 'Tanggal, nama lokasi, dan titik GPS atau link Google Maps wajib diisi dengan benar.');
+    if ($year !== self::BOOKING_HIJRI_YEAR || $day === false || (($lat === null || $lng === null) && $maps_url === '')) {
+      $this->back($year, 'Tanggal dan lokasi Google Maps wajib diisi dengan benar.');
     }
     if ($maps_url !== '' && !filter_var($maps_url, FILTER_VALIDATE_URL)) {
       $this->back($year, 'Link Google Maps tidak valid.');
@@ -78,11 +78,11 @@ class Maulid extends CI_Controller
       'booker_name' => $this->parentName($wali),
       'hijri_year' => $year,
       'rabiul_awal_day' => $day,
-      'location_name' => $location,
+      'location_name' => 'Lokasi Google Maps',
       'latitude' => $lat,
       'longitude' => $lng,
       'maps_url' => $maps_url === '' ? null : $maps_url,
-      'notes' => $notes === '' ? null : $notes,
+      'notes' => null,
       'status' => 'booked',
       'active_slot' => 1,
       'created_at' => date('Y-m-d H:i:s'),

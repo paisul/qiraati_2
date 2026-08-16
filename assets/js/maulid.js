@@ -29,13 +29,20 @@
     if (!button) return;
     var form = button.closest('form');
     var status = form.querySelector('.js-location-status');
-    if (!navigator.geolocation) { status.textContent = 'Browser ini tidak mendukung pengambilan lokasi.'; return; }
+    if (!navigator.geolocation) {
+      status.textContent = 'Browser ini tidak mendukung pengambilan lokasi.';
+      return;
+    }
+
     button.disabled = true;
-    status.textContent = 'Mengambil lokasi…';
+    status.textContent = 'Mengambil lokasi...';
     navigator.geolocation.getCurrentPosition(function (position) {
-      form.querySelector('.js-latitude').value = position.coords.latitude.toFixed(8);
-      form.querySelector('.js-longitude').value = position.coords.longitude.toFixed(8);
-      status.textContent = 'Lokasi berhasil diambil (akurasi ±' + Math.round(position.coords.accuracy) + ' meter).';
+      var latitude = position.coords.latitude.toFixed(8);
+      var longitude = position.coords.longitude.toFixed(8);
+      form.querySelector('.js-latitude').value = latitude;
+      form.querySelector('.js-longitude').value = longitude;
+      form.querySelector('[name="maps_url"]').value = 'https://www.google.com/maps?q=' + latitude + ',' + longitude;
+      status.textContent = 'Lokasi Google Maps berhasil diambil (akurasi sekitar ' + Math.round(position.coords.accuracy) + ' meter).';
       button.disabled = false;
     }, function () {
       status.textContent = 'Lokasi gagal diambil. Aktifkan GPS/izin lokasi, atau tempel link Google Maps.';
