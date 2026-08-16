@@ -49,4 +49,4 @@
     </div>
   <?php endif; ?>
 </div>
-<script src="<?= base_url('assets/js/maulid.js'); ?>"></script>
+<script src="<?= base_url('assets/js/maulid.js'); ?>?v=<?= filemtime(FCPATH . 'assets/js/maulid.js'); ?>"></script>
