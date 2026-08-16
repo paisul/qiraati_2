@@ -28,19 +28,20 @@ $mobile_calendar = !empty($mobile_calendar);
               <span class="maulid-status available">Tersedia</span>
               <span class="maulid-tap-hint">Tekan untuk booking</span>
             </button>
+          <?php elseif ($b) : ?>
+            <?php if ($maps_url_tampil) : ?><a class="maulid-day-content maulid-booked-map" target="_blank" rel="noopener noreferrer" href="<?= html_escape($maps_url_tampil); ?>" aria-label="Buka lokasi <?= html_escape(!empty($b['calendar_name']) ? $b['calendar_name'] : $b['booker_name']); ?> di Google Maps"><?php else : ?><div class="maulid-day-content"><?php endif; ?>
+              <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
+              <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
+              <strong class="maulid-booker"><?= html_escape(!empty($b['calendar_name']) ? $b['calendar_name'] : $b['booker_name']); ?></strong>
+            <?= $maps_url_tampil ? '</a>' : '</div>'; ?>
+            <?php if ($is_admin || (int) $b['user_id'] === $current_user_id) : ?>
+              <?= form_open('maulid/cancel/' . $b['id'], ['class' => 'maulid-cancel-form']); ?><button type="submit" class="maulid-cancel js-maulid-cancel">Batalkan</button><?= form_close(); ?>
+            <?php endif; ?>
           <?php else : ?>
             <div class="maulid-day-content">
               <span class="maulid-day-number"><span><?= $day; ?></span><small>H</small></span>
               <span class="maulid-gregorian"><?= html_escape($masehi['label']); ?></span>
-              <?php if ($b) : ?>
-                <span class="maulid-status booked">Dibooking</span>
-                <strong class="maulid-booker"><?= html_escape(!empty($b['calendar_name']) ? $b['calendar_name'] : $b['booker_name']); ?></strong>
-                <span class="maulid-location"><?= html_escape($b['location_name']); ?></span>
-                <?php if ($maps_url_tampil) : ?><a class="maulid-map-link" target="_blank" rel="noopener noreferrer" href="<?= html_escape($maps_url_tampil); ?>"><i class="fas fa-map-marker-alt"></i> Lokasi</a><?php endif; ?>
-                <?php if ($is_admin || (int) $b['user_id'] === $current_user_id) : ?>
-                  <?= form_open('maulid/cancel/' . $b['id'], ['class' => 'maulid-cancel-form']); ?><button type="submit" class="maulid-cancel js-maulid-cancel">Batalkan</button><?= form_close(); ?>
-                <?php endif; ?>
-              <?php elseif ($is_locked_day) : ?>
+              <?php if ($is_locked_day) : ?>
                 <span class="maulid-status locked">Dikunci</span>
                 <span class="maulid-tap-hint">Kamis dan Sabtu</span>
               <?php else : ?><span class="maulid-status available">Tersedia</span><?php endif; ?>
