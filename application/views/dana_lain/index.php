@@ -1,4 +1,8 @@
 <!-- Content Wrapper. Contains page content -->
+<?php
+$dana_route = isset($dana_route) ? $dana_route : 'dana-lain';
+$dana_label = isset($dana_label) ? $dana_label : 'Dana Lain-lain';
+?>
 <div class="content-wrapper">
 
   <!-- Main content -->
@@ -11,7 +15,7 @@
               <h4 class="m-0"><?= $title; ?></h4>
             </div>
 
-            <div class="flash-data" data-flashdata="<?= $pesan ?? ''; ?>" data-title="Dana Lain-lain">
+            <div class="flash-data" data-flashdata="<?= $pesan ?? ''; ?>" data-title="<?= html_escape($dana_label); ?>">
             </div>
 
             <div class="card-body">
@@ -79,7 +83,7 @@
                       <?php if (!$baca_saja) : ?>
                         <td>
                           <button class="btn btn-success" data-toggle="modal" data-target="#editDana<?= $dn['IdDanaLain']; ?>">Ubah</button>
-                          <a href="<?= base_url('dana-lain/delete/' . $dn['IdDanaLain']); ?>" class="btn btn-danger ml-3 tombol-hapus" tipeData="Dana Lain-lain" namaData="<?= html_escape($dn['Perihal']); ?>">Hapus</a>
+                          <a href="<?= base_url($dana_route . '/delete/' . $dn['IdDanaLain']); ?>" class="btn btn-danger ml-3 tombol-hapus" tipeData="<?= html_escape($dana_label); ?>" namaData="<?= html_escape($dn['Perihal']); ?>">Hapus</a>
                         </td>
                       <?php endif; ?>
                     </tr>
@@ -100,13 +104,13 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-success">
-        <h4 class="modal-title">Tambah Dana Lain-lain</h4>
+        <h4 class="modal-title">Tambah <?= html_escape($dana_label); ?></h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <?= form_open('dana-lain/add'); ?>
+        <?= form_open($dana_route . '/add'); ?>
         <div class="form-group">
           <label for="tanggal">Tanggal</label>
           <input type="date" class="form-control" id="tanggal" name="tanggal" value="<?= date('Y-m-d'); ?>" required>
@@ -141,13 +145,13 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-success">
-          <h4 class="modal-title">Ubah Dana Lain-lain</h4>
+          <h4 class="modal-title">Ubah <?= html_escape($dana_label); ?></h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <?= form_open('dana-lain/update/' . $dn['IdDanaLain']); ?>
+          <?= form_open($dana_route . '/update/' . $dn['IdDanaLain']); ?>
           <div class="form-group">
             <label for="tanggal<?= $dn['IdDanaLain']; ?>">Tanggal</label>
             <input type="date" class="form-control" id="tanggal<?= $dn['IdDanaLain']; ?>" name="tanggal" value="<?= $dn['Tanggal']; ?>" required>

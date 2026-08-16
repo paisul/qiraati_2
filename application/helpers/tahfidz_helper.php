@@ -122,7 +122,34 @@ function pastikan_tabel_menu_sidebar($db)
   pastikan_menu_dana_submenu($db);
   pastikan_label_menu_dana($db);
   pastikan_menu_dana_submenu_musyrif($db);
+  pastikan_menu_dana_maulid($db);
   pastikan_menu_booking_maulid($db);
+}
+
+// Tambahkan pencatatan Dana Maulid sebagai anak menu Dana, tepat sebelum Lain-lain.
+// Fungsi ini juga memperbaiki urutan instalasi lama secara idempotent.
+function pastikan_menu_dana_maulid($db)
+{
+  $daftar = [
+    ['dana_maulid', 'admin', 'dana', 1],
+    ['msy_dana_maulid', 'musyrif', 'msy_dana', 0],
+  ];
+
+  foreach ($daftar as $item) {
+    list($kunci, $grup, $parent, $hanya_admin) = $item;
+
+    $db->where('ParentKunci', $parent)->where('Label', 'Lain-lain')->update('menu_sidebar', ['Urutan' => 4]);
+
+    if ($db->where('KunciMenu', $kunci)->count_all_results('menu_sidebar') === 0) {
+      $db->insert('menu_sidebar', [
+        'KunciMenu' => $kunci, 'ParentKunci' => $parent, 'Label' => 'Maulid',
+        'Url' => 'dana-maulid', 'Icon' => 'fas fa-fw fa-mosque',
+        'Urutan' => 3, 'Aktif' => 1, 'HanyaAdmin' => $hanya_admin, 'Grup' => $grup,
+      ]);
+    } else {
+      $db->where('KunciMenu', $kunci)->update('menu_sidebar', ['Urutan' => 3]);
+    }
+  }
 }
 
 // Booking Maulid tersedia untuk Wali dan Musyrif (membuat/membatalkan miliknya), serta Admin.

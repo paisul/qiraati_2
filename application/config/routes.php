@@ -63,6 +63,8 @@ $route['dana'] = 'dana';
 // (translate_uri_dashes di atas TIDAK cukup - itu cuma untuk method, bukan mengubah target rute).
 $route['dana-lain'] = 'Dana_lain';
 $route['dana-lain/(.+)'] = 'Dana_lain/$1';
+$route['dana-maulid'] = 'Dana_maulid';
+$route['dana-maulid/(.+)'] = 'Dana_maulid/$1';
 $route['laporan'] = 'laporan';
 $route['laporan/(:any)'] = 'laporan/index/$1';
 $route['statistik'] = 'statistik';

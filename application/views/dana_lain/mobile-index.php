@@ -1,6 +1,10 @@
 <?php $baca_saja = $user['level'] == 'Wali'; ?>
+<?php
+$dana_route = isset($dana_route) ? $dana_route : 'dana-lain';
+$dana_label = isset($dana_label) ? $dana_label : 'Dana Lain-lain';
+?>
 <div class="m-content">
-  <p class="m-page-title">Lain-lain</p>
+  <p class="m-page-title"><?= html_escape($dana_label); ?></p>
 
   <div class="m-stat-row m-dana-stat-sticky">
     <div class="m-card m-stat-success" style="padding: 10px;">
@@ -20,9 +24,9 @@
   <?php if (!$baca_saja) : ?>
     <div class="m-popup-overlay" id="formTambahDana" hidden>
       <div class="m-popup-sheet">
-        <?= form_open('dana-lain/add', ['class' => 'm-popup-form']); ?>
+        <?= form_open($dana_route . '/add', ['class' => 'm-popup-form']); ?>
         <div class="m-popup-header">
-          <p class="m-popup-title">Tambah Dana Lain-lain</p>
+          <p class="m-popup-title">Tambah <?= html_escape($dana_label); ?></p>
           <button type="button" class="m-popup-close" data-toggle-target="#formTambahDana"><i class="fas fa-times"></i></button>
         </div>
         <div class="m-popup-body">
@@ -62,7 +66,7 @@
               </button>
             </div>
             <div class="m-dana-swipe-actions-kanan">
-              <a href="<?= base_url('dana-lain/delete/' . $dn['IdDanaLain']); ?>" class="tombol-hapus" tipeData="Dana Lain-lain" namaData="<?= html_escape($dn['Perihal']); ?>">
+              <a href="<?= base_url($dana_route . '/delete/' . $dn['IdDanaLain']); ?>" class="tombol-hapus" tipeData="<?= html_escape($dana_label); ?>" namaData="<?= html_escape($dn['Perihal']); ?>">
                 <i class="fas fa-trash"></i> Hapus
               </a>
             </div>
@@ -86,9 +90,9 @@
 
           <div class="m-popup-overlay" id="editDana<?= $dn['IdDanaLain']; ?>" hidden>
             <div class="m-popup-sheet">
-              <?= form_open('dana-lain/update/' . $dn['IdDanaLain'], ['class' => 'm-popup-form']); ?>
+              <?= form_open($dana_route . '/update/' . $dn['IdDanaLain'], ['class' => 'm-popup-form']); ?>
               <div class="m-popup-header">
-                <p class="m-popup-title">Ubah Dana Lain-lain</p>
+                <p class="m-popup-title">Ubah <?= html_escape($dana_label); ?></p>
                 <button type="button" class="m-popup-close" data-toggle-target="#editDana<?= $dn['IdDanaLain']; ?>"><i class="fas fa-times"></i></button>
               </div>
               <div class="m-popup-body">
@@ -143,7 +147,7 @@
 </div>
 
 <?php if (!$baca_saja) : ?>
-  <button type="button" class="m-fab" data-toggle-target="#formTambahDana" aria-label="Tambah Dana Lain-lain">
+  <button type="button" class="m-fab" data-toggle-target="#formTambahDana" aria-label="Tambah <?= html_escape($dana_label); ?>">
     <i class="fas fa-plus"></i>
   </button>
 <?php endif; ?>
