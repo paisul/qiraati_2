@@ -63,7 +63,9 @@
           doubleClickZoom: false
         });
         window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-          maxNativeZoom: 19,
+          // Beberapa wilayah belum memiliki tile Esri level 19. Gunakan citra level 18
+          // sebagai sumber, lalu biarkan Leaflet memperbesarnya sampai level 22.
+          maxNativeZoom: 18,
           maxZoom: 22,
           attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
         }).addTo(bookingMap);
