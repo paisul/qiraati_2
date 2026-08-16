@@ -47,7 +47,7 @@
           confirmButtonColor: '#198754',
           reverseButtons: true
         }).then(function (result) {
-          if (result.isConfirmed) openBookingPopup(calendarButton, true);
+          if (result.isConfirmed || result.value) openBookingPopup(calendarButton, true);
         });
       } else if (window.confirm('Anda sudah booking tanggal ' + bookedDay + ' Rabiul Awal. Ganti hari booking?')) {
         openBookingPopup(calendarButton, true);
@@ -74,10 +74,10 @@
           confirmButtonColor: '#dc3545',
           reverseButtons: true
         }).then(function (result) {
-          if (result.isConfirmed) cancelForm.submit();
+          if (result.isConfirmed || result.value) HTMLFormElement.prototype.submit.call(cancelForm);
         });
       } else if (window.confirm('Batalkan booking ini?')) {
-        cancelForm.submit();
+        HTMLFormElement.prototype.submit.call(cancelForm);
       }
       return;
     }
