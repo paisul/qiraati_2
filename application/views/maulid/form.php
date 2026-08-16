@@ -1,4 +1,4 @@
-<input type="hidden" name="hijri_year" value="<?= (int)$year; ?>"><input type="hidden" name="rabiul_awal_day" value="<?= (int)$form_day; ?>">
+<input type="hidden" name="hijri_year" value="<?= (int)$year; ?>"><input type="hidden" class="js-maulid-booking-day" name="rabiul_awal_day" value="<?= (int)$form_day; ?>">
 <div class="form-group"><label>Nama Ibu/Bapak</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
 <div class="form-group"><label>Nama/Lokasi Acara *</label><input class="form-control" name="location_name" maxlength="255" placeholder="Rumah Bapak Ahmad, Kampung Bukit" required></div>
 <div class="form-group"><button type="button" class="btn btn-outline-primary js-use-location"><i class="fas fa-crosshairs"></i> Gunakan Lokasi Saya</button><small class="form-text text-muted js-location-status">Izinkan akses lokasi saat diminta browser.</small></div>
