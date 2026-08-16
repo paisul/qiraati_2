@@ -1,7 +1,7 @@
 (function () {
   var bookingMap = null;
-  var VILLAGE_LATITUDE = 6.1733984;
-  var VILLAGE_LONGITUDE = 101.8324554;
+  var VILLAGE_LATITUDE = 6.1748008;
+  var VILLAGE_LONGITUDE = 101.8331653;
   var VILLAGE_RADIUS_METERS = 2000;
 
   function distanceMeters(lat1, lng1, lat2, lng2) {
