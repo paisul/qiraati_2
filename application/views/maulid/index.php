@@ -4,10 +4,10 @@
   <div class="card"><div class="card-header bg-success d-flex align-items-center"><h4 class="m-0 flex-grow-1"><?= html_escape($title); ?></h4>
     <span class="badge badge-light p-2"><?= (int) $gregorian_year; ?> M / <?= (int) $year; ?> H</span>
   </div><div class="card-body">
-  <?php if (!$is_admin) : ?><div class="alert alert-info">Nama booking: <strong><?= html_escape($parent_name); ?></strong>. Pilih salah satu tanggal yang tersedia.</div><?php endif; ?>
+  <?php if (!$is_admin) : ?><div class="alert <?= $has_active_booking ? 'alert-success' : 'alert-info'; ?>">Nama booking: <strong><?= html_escape($parent_name); ?></strong>. <?= $has_active_booking ? 'Akun ini sudah memiliki satu booking aktif.' : 'Pilih satu tanggal yang tersedia. Kamis dan Sabtu dikunci.'; ?></div><?php endif; ?>
   <p class="text-muted small">Biru tua = tanggal Hijriah, jingga = tanggal Masehi. Tanggal Masehi memakai kalender Hijriah sipil dan dapat berbeda satu hari dari penetapan resmi.</p>
   <?php $mobile_calendar = false; $this->load->view('maulid/calendar'); ?>
-  <?php if (!$is_admin) $this->load->view('maulid/booking-popup'); ?>
+  <?php if (!$is_admin && !$has_active_booking) $this->load->view('maulid/booking-popup'); ?>
   <?php if ($is_admin) : ?><hr><h5>Riwayat/Rekap <?= (int)$year; ?> H</h5><div class="table-responsive"><table class="table table-striped"><thead><tr><th>Tanggal</th><th>Nama Ibu/Bapak</th><th>Lokasi</th><th>Maps</th><th>Status</th><th>Aksi</th></tr></thead><tbody><?php foreach($rows as $r): ?><tr><td><?= (int)$r['rabiul_awal_day']; ?> Rabiul Awal</td><td><?= html_escape($r['booker_name']); ?></td><td><?= html_escape($r['location_name']); ?></td><td><?php if($r['maps_url']||($r['latitude'] !== null && $r['longitude'] !== null)):?><a target="_blank" rel="noopener noreferrer" href="<?= html_escape($r['latitude'] !== null && $r['longitude'] !== null?'https://www.google.com/maps/search/?api=1&query='.rawurlencode($r['latitude'].','.$r['longitude']):$r['maps_url']); ?>">Buka</a><?php endif;?></td><td><?= $r['status']==='booked'?'<span class="badge badge-success">Aktif</span>':'<span class="badge badge-secondary">Dibatalkan</span>'; ?></td><td><?php if($r['status']==='booked'): ?><button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editBooking<?= (int)$r['id']; ?>">Ubah</button><?php endif;?></td></tr><?php endforeach;?></tbody></table></div><?php endif; ?>
   </div></div>
 </div></div></div>

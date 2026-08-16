@@ -1,6 +1,10 @@
 <input type="hidden" name="hijri_year" value="<?= (int)$year; ?>"><input type="hidden" class="js-maulid-booking-day" name="rabiul_awal_day" value="<?= (int)$form_day; ?>">
+<?php if (!empty($is_musyrif)) : ?>
+<div class="form-group"><label>Nama Musyrif</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
+<?php else : ?>
 <div class="form-group"><label>Nama Santri</label><textarea class="form-control" rows="<?= max(1, count($student_names)); ?>" readonly><?= html_escape(implode("\n", $student_names)); ?></textarea></div>
 <div class="form-group"><label>Nama Wali</label><input class="form-control" value="<?= html_escape($parent_name); ?>" readonly></div>
+<?php endif; ?>
 <input type="hidden" class="js-latitude" name="latitude"><input type="hidden" class="js-longitude" name="longitude">
 <input type="hidden" name="maps_url">
 <button type="button" class="maulid-location-button js-use-location">

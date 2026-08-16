@@ -125,12 +125,13 @@ function pastikan_tabel_menu_sidebar($db)
   pastikan_menu_booking_maulid($db);
 }
 
-// Booking Maulid tersedia untuk Wali (membuat/membatalkan miliknya) dan Admin (rekap/pengelolaan).
+// Booking Maulid tersedia untuk Wali dan Musyrif (membuat/membatalkan miliknya), serta Admin.
 function pastikan_menu_booking_maulid($db)
 {
   $daftar = [
     ['maulid_admin', 'admin', 1],
     ['maulid_wali', 'wali', 0],
+    ['maulid_musyrif', 'musyrif', 0],
   ];
 
   foreach ($daftar as $item) {
@@ -153,6 +154,9 @@ function pastikan_menu_booking_maulid($db)
   $db->where('KunciMenu', 'maulid_wali')->update('menu_sidebar', [
     'TampilDashboard' => 1,
     'TampilMenuBawah' => 1,
+  ]);
+  $db->where('KunciMenu', 'maulid_musyrif')->update('menu_sidebar', [
+    'TampilDashboard' => 1,
   ]);
 }
 

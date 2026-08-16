@@ -9,17 +9,21 @@ class Maulid extends CI_Controller
   public function __construct()
   {
     parent::__construct();
-    cek_level(['Admin', 'Wali']);
+    cek_level(['Admin', 'Wali', 'Musyrif']);
     $this->load->model('Maulid_model');
     $this->load->model('Wali_M');
+    $this->load->model('Musyrif_M');
   }
 
   public function index()
   {
     $year = self::BOOKING_HIJRI_YEAR;
-    $is_admin = $this->session->userdata('level') === 'Admin';
+    $level = $this->session->userdata('level');
+    $is_admin = $level === 'Admin';
+    $is_musyrif = $level === 'Musyrif';
     $user = $this->getLoginUser();
-    $wali = $is_admin ? null : $this->getWali();
+    $wali = (!$is_admin && !$is_musyrif) ? $this->getWali() : null;
+    $musyrif = $is_musyrif ? $this->Musyrif_M->getDataMusyrif($this->session->userdata('username')) : null;
     $rows = $this->Maulid_model->getByYear($year, $is_admin);
     $bookings = [];
     foreach ($rows as $row) {
@@ -31,7 +35,7 @@ class Maulid extends CI_Controller
 
     $data = [
       'title' => $is_admin ? 'Rekap Booking Maulid' : 'Booking Maulid',
-      'user' => $is_admin ? $user : $wali,
+      'user' => $is_admin ? $user : ($is_musyrif ? $musyrif : $wali),
       'year' => $year,
       'gregorian_year' => self::BOOKING_GREGORIAN_YEAR,
       'bookings' => $bookings,
@@ -39,26 +43,32 @@ class Maulid extends CI_Controller
       'calendar_start_offset' => $gregorian_dates[1]['weekday'],
       'rows' => $rows,
       'is_admin' => $is_admin,
+      'is_musyrif' => $is_musyrif,
+      'has_active_booking' => !$is_admin && (bool) $this->Maulid_model->getActiveByUser((int) $user['IdUser'], $year),
       'current_user_id' => (int) $user['IdUser'],
-      'parent_name' => $is_admin ? '' : $this->parentName($wali),
-      'student_names' => $is_admin ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
+      'parent_name' => $is_admin ? '' : ($is_musyrif ? $this->musyrifName($musyrif) : $this->parentName($wali)),
+      'student_names' => ($is_admin || $is_musyrif) ? [] : array_column($wali['daftar_anak'], 'NamaLengkap'),
       'pesan' => $this->input->get('pesan') ?: $this->session->flashdata('pesan'),
       'isi' => tampilan_mobile() ? 'maulid/mobile-index' : 'maulid/index',
     ];
     $wrapper = $is_admin
       ? (tampilan_mobile() ? 'templates/wrapper-mobile-simple' : 'templates/wrapper-admin')
-      : (tampilan_mobile() ? 'templates/wrapper-wali-mobile' : 'templates/wrapper-wali');
+      : ($is_musyrif
+        ? (tampilan_mobile() ? 'templates/wrapper-musyrif-mobile' : 'templates/wrapper-musyrif')
+        : (tampilan_mobile() ? 'templates/wrapper-wali-mobile' : 'templates/wrapper-wali'));
     $this->load->view($wrapper, $data);
   }
 
   public function create()
   {
     $this->requirePost();
-    if ($this->session->userdata('level') !== 'Wali') {
-      show_error('Hanya akun Wali yang dapat membuat booking.', 403);
+    $level = $this->session->userdata('level');
+    if (!in_array($level, ['Wali', 'Musyrif'], true)) {
+      show_error('Hanya akun Wali dan Musyrif yang dapat membuat booking.', 403);
     }
 
-    $wali = $this->getWali();
+    $wali = $level === 'Wali' ? $this->getWali() : null;
+    $musyrif = $level === 'Musyrif' ? $this->Musyrif_M->getDataMusyrif($this->session->userdata('username')) : null;
     $user = $this->getLoginUser();
     $year = (int) $this->input->post('hijri_year');
     $day = filter_var($this->input->post('rabiul_awal_day'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 30]]);
@@ -72,10 +82,14 @@ class Maulid extends CI_Controller
     if ($maps_url !== '' && !filter_var($maps_url, FILTER_VALIDATE_URL)) {
       $this->back($year, 'Link Google Maps tidak valid.');
     }
+    $selected_date = $this->rabiulAwalGregorianDates($year)[$day];
+    if (in_array((int) $selected_date['weekday'], [4, 6], true)) {
+      $this->back($year, 'Hari Kamis dan Sabtu dikunci dan tidak dapat dibooking.');
+    }
 
     $result = $this->Maulid_model->createBooking([
       'user_id' => (int) $user['IdUser'],
-      'booker_name' => $this->parentName($wali),
+      'booker_name' => $level === 'Musyrif' ? $this->musyrifName($musyrif) : $this->parentName($wali),
       'hijri_year' => $year,
       'rabiul_awal_day' => $day,
       'location_name' => 'Lokasi Google Maps',
@@ -91,7 +105,7 @@ class Maulid extends CI_Controller
 
     $message = $result['ok']
       ? 'Booking Maulid berhasil disimpan.'
-      : ($result['duplicate'] ? "Tanggal {$day} Rabiul Awal sudah dibooking oleh user lain. Silakan pilih tanggal yang masih tersedia." : 'Booking gagal disimpan. Silakan coba lagi.');
+      : ($result['already_booked'] ? 'Satu akun hanya dapat memiliki satu booking aktif.' : ($result['duplicate'] ? "Tanggal {$day} Rabiul Awal sudah dibooking oleh user lain. Silakan pilih tanggal yang masih tersedia." : 'Booking gagal disimpan. Silakan coba lagi.'));
     $this->back($year, $message);
   }
 
@@ -160,6 +174,13 @@ class Maulid extends CI_Controller
       show_error('Nama Ayah/Ibu belum diisi pada profil santri. Lengkapi profil terlebih dahulu.', 422);
     }
     return implode(' / ', $names);
+  }
+
+  private function musyrifName($musyrif)
+  {
+    $name = trim((string) ($musyrif['NamaMusyrif'] ?? $musyrif['username'] ?? ''));
+    if ($name === '') show_error('Nama Musyrif belum tersedia.', 422);
+    return $name;
   }
 
   private function coordinate($value, $min, $max)

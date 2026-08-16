@@ -7,13 +7,13 @@
     <div class="m-list-title">Kalender <?= (int) $gregorian_year; ?> M / <?= (int) $year; ?> H</div>
     <?php if (!$is_admin) : ?>
       <p class="m-list-sub mt-2">Nama booking: <strong><?= html_escape($parent_name); ?></strong></p>
-      <p class="m-list-sub">Geser kalender ke samping bila perlu, lalu tekan tanggal berwarna hijau untuk booking.</p>
+      <p class="m-list-sub"><?= $has_active_booking ? 'Akun ini sudah memiliki satu booking aktif.' : 'Geser kalender ke samping, lalu pilih satu tanggal. Kamis dan Sabtu dikunci.'; ?></p>
     <?php endif; ?>
   </div>
   <p class="m-list-sub" style="margin:0 4px 8px;">Biru tua: Hijriah. Jingga: Masehi. Konversi dapat berbeda satu hari dari penetapan resmi.</p>
 
   <?php $mobile_calendar = true; $this->load->view('maulid/calendar'); ?>
-  <?php if (!$is_admin) $this->load->view('maulid/booking-popup'); ?>
+  <?php if (!$is_admin && !$has_active_booking) $this->load->view('maulid/booking-popup'); ?>
 
   <?php if ($is_admin) : ?>
     <div class="m-card">
