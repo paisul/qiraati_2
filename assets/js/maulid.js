@@ -1,37 +1,84 @@
 (function () {
   var bookingMap = null;
 
+  function openBookingPopup(calendarButton, replaceExisting) {
+    var bookingPopup = document.getElementById('maulidBookingPopup');
+    if (!bookingPopup) return;
+    var selectedDay = calendarButton.getAttribute('data-day');
+    var bookingForm = bookingPopup.querySelector('form');
+    var dayInput = bookingPopup.querySelector('.js-maulid-booking-day');
+    var replaceInput = bookingPopup.querySelector('.js-maulid-replace-booking');
+    var popupTitle = bookingPopup.querySelector('.js-maulid-booking-title');
+    var existingMapPreview = bookingPopup.querySelector('.js-map-preview');
+    var locationButton = bookingPopup.querySelector('.js-use-location');
+    var locationStatus = bookingPopup.querySelector('.js-location-status');
+
+    if (bookingForm) bookingForm.reset();
+    if (locationButton) locationButton.disabled = false;
+    if (locationStatus) locationStatus.textContent = 'Tekan untuk mengambil titik lokasi acara';
+    if (existingMapPreview) existingMapPreview.hidden = true;
+    if (bookingMap) {
+      bookingMap.remove();
+      bookingMap = null;
+    }
+    if (dayInput) dayInput.value = selectedDay;
+    if (replaceInput) replaceInput.value = replaceExisting ? '1' : '0';
+    if (popupTitle) popupTitle.textContent = (replaceExisting ? 'Ganti ke ' : 'Booking ') + selectedDay + ' Rabiul Awal';
+
+    bookingPopup.hidden = false;
+    document.body.classList.add('maulid-popup-open');
+    var closeButton = bookingPopup.querySelector('.js-close-maulid-booking');
+    if (closeButton) closeButton.focus();
+  }
+
   document.addEventListener('click', function (event) {
     var calendarButton = event.target.closest('.js-open-maulid-booking');
     var bookingPopup = document.getElementById('maulidBookingPopup');
     if (calendarButton && calendarButton.getAttribute('data-already-booked-day')) {
-      window.alert('Anda sudah booking pada tanggal ' + calendarButton.getAttribute('data-already-booked-day') + ' Rabiul Awal. Satu akun hanya dapat booking satu tanggal.');
+      var bookedDay = calendarButton.getAttribute('data-already-booked-day');
+      if (window.Swal) {
+        window.Swal.fire({
+          icon: 'question',
+          title: 'Sudah booking tanggal ' + bookedDay,
+          text: 'Apakah Anda ingin mengganti hari booking ke tanggal ' + calendarButton.getAttribute('data-day') + ' Rabiul Awal?',
+          showCancelButton: true,
+          confirmButtonText: 'Ganti Hari',
+          cancelButtonText: 'Tidak',
+          confirmButtonColor: '#198754',
+          reverseButtons: true
+        }).then(function (result) {
+          if (result.isConfirmed) openBookingPopup(calendarButton, true);
+        });
+      } else if (window.confirm('Anda sudah booking tanggal ' + bookedDay + ' Rabiul Awal. Ganti hari booking?')) {
+        openBookingPopup(calendarButton, true);
+      }
       return;
     }
     if (calendarButton && bookingPopup) {
-      var selectedDay = calendarButton.getAttribute('data-day');
-      var bookingForm = bookingPopup.querySelector('form');
-      var dayInput = bookingPopup.querySelector('.js-maulid-booking-day');
-      var popupTitle = bookingPopup.querySelector('.js-maulid-booking-title');
-      var existingMapPreview = bookingPopup.querySelector('.js-map-preview');
-      var locationButton = bookingPopup.querySelector('.js-use-location');
-      var locationStatus = bookingPopup.querySelector('.js-location-status');
+      openBookingPopup(calendarButton, false);
+      return;
+    }
 
-      if (bookingForm) bookingForm.reset();
-      if (locationButton) locationButton.disabled = false;
-      if (locationStatus) locationStatus.textContent = 'Tekan untuk mengambil titik lokasi acara';
-      if (existingMapPreview) existingMapPreview.hidden = true;
-      if (bookingMap) {
-        bookingMap.remove();
-        bookingMap = null;
+    var cancelButton = event.target.closest('.js-maulid-cancel');
+    if (cancelButton) {
+      event.preventDefault();
+      var cancelForm = cancelButton.closest('form');
+      if (window.Swal) {
+        window.Swal.fire({
+          icon: 'warning',
+          title: 'Batalkan booking?',
+          text: 'Tanggal ini akan kembali tersedia untuk pengguna lain.',
+          showCancelButton: true,
+          confirmButtonText: 'Batalkan Booking',
+          cancelButtonText: 'Tetap Booking',
+          confirmButtonColor: '#dc3545',
+          reverseButtons: true
+        }).then(function (result) {
+          if (result.isConfirmed) cancelForm.submit();
+        });
+      } else if (window.confirm('Batalkan booking ini?')) {
+        cancelForm.submit();
       }
-      if (dayInput) dayInput.value = selectedDay;
-      if (popupTitle) popupTitle.textContent = 'Booking ' + selectedDay + ' Rabiul Awal';
-
-      bookingPopup.hidden = false;
-      document.body.classList.add('maulid-popup-open');
-      var closeButton = bookingPopup.querySelector('.js-close-maulid-booking');
-      if (closeButton) closeButton.focus();
       return;
     }
 

@@ -38,7 +38,7 @@ $mobile_calendar = !empty($mobile_calendar);
                 <span class="maulid-location"><?= html_escape($b['location_name']); ?></span>
                 <?php if ($maps_url_tampil) : ?><a class="maulid-map-link" target="_blank" rel="noopener noreferrer" href="<?= html_escape($maps_url_tampil); ?>"><i class="fas fa-map-marker-alt"></i> Lokasi</a><?php endif; ?>
                 <?php if ($is_admin || (int) $b['user_id'] === $current_user_id) : ?>
-                  <?= form_open('maulid/cancel/' . $b['id'], ['class' => 'maulid-cancel-form']); ?><button type="submit" class="maulid-cancel" onclick="return confirm('Batalkan booking ini?')">Batalkan</button><?= form_close(); ?>
+                  <?= form_open('maulid/cancel/' . $b['id'], ['class' => 'maulid-cancel-form']); ?><button type="submit" class="maulid-cancel js-maulid-cancel">Batalkan</button><?= form_close(); ?>
                 <?php endif; ?>
               <?php elseif ($is_locked_day) : ?>
                 <span class="maulid-status locked">Dikunci</span>

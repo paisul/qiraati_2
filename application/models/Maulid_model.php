@@ -60,7 +60,7 @@ class Maulid_model extends CI_Model
       ->where('status', 'booked')->get('maulid_bookings')->row_array();
   }
 
-  public function createBooking($data)
+  public function createBooking($data, $replace_existing = false)
   {
     $this->db->trans_begin();
     // Kunci baris akun agar dua permintaan bersamaan dari akun yang sama tidak dapat
@@ -71,8 +71,13 @@ class Maulid_model extends CI_Model
       [(int) $data['user_id'], (int) $data['hijri_year'], 'booked']
     )->row_array();
     if ($existing) {
-      $this->db->trans_rollback();
-      return ['ok' => false, 'duplicate' => false, 'already_booked' => true];
+      if (!$replace_existing) {
+        $this->db->trans_rollback();
+        return ['ok' => false, 'duplicate' => false, 'already_booked' => true];
+      }
+      $this->db->where('id', (int) $existing['id'])->update('maulid_bookings', [
+        'status' => 'cancelled', 'active_slot' => null, 'updated_at' => date('Y-m-d H:i:s'),
+      ]);
     }
     // Duplicate key adalah hasil bisnis yang wajar saat dua wali booking bersamaan; jangan biarkan
     // db_debug CI menampilkan halaman error sebelum controller bisa memberi pesan yang ramah.
